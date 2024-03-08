@@ -1,0 +1,321 @@
+<!-- Your existing styles -->
+<style>
+    body {
+        background-color: #f8f9fa;
+    }
+
+    .container {
+        background-color: #ffffff;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        border-radius: 10px;
+        margin-top: 20px;
+    }
+
+    h2,
+    h1 {
+        color: #007bff;
+    }
+
+    .breadcrumbs a {
+        text-decoration: none;
+        color: #007bff;
+    }
+
+    .breadcrumbs a:hover {
+        color: black;
+    }
+
+    .fa-solid,
+    .fas {
+        font-weight: 900;
+        font-size: 30px;
+        margin-right: 20px;
+        color: black;
+    }
+
+    .fa-solid {
+        transition: border-bottom 0.1s ease;
+    }
+
+    .fa-solid:hover {
+        border-bottom: 2px solid #000;
+        /* Change the color and thickness as needed */
+        padding-bottom: 3px;
+        /* Change the color and thickness as needed */
+    }
+
+    .cart-count {
+        background-color: #23800b;
+        color: white;
+        border-radius: 28%;
+        padding: 0px 6px;
+        font-size: 12px;
+        position: relative;
+        top: 0%;
+        left: -18px;
+        bottom: 21px;
+    }
+
+    .col-md-3 {
+        margin-bottom: 3rem;
+    }
+
+    .card-header {
+        background-color: white;
+        border: none;
+    }
+
+    .card:hover {
+        transform: scale(1.05);
+        transition: transform 0.3s ease;
+    }
+
+
+    .carousel-inner {
+        width: 250px;
+        /* Set your desired fixed width */
+        margin: 0 auto;
+        /* Center the carousel within the container */
+        overflow: hidden;
+        /* Hide any overflow beyond the fixed width */
+    }
+
+    /* Rest of your existing styles */
+    body {
+        background: #f8f8f8;
+        font-family: 'Arial', sans-serif;
+        margin: 0 auto;
+        padding: 0;
+        max-width: 1200px;
+    }
+
+    .firstBox {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        padding: 20px;
+        background: #fff;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+    }
+
+    .carousel-item {
+        width: 100%;
+        /* Set a fixed width for carousel items */
+    }
+
+    .xzoom-container {
+        overflow: hidden;
+    }
+
+    .xzoom-container img {
+        width: 100%;
+        /* Set the width to fill the container */
+        height: auto;
+        /* Maintain aspect ratio */
+        transition: transform 0.5s;
+        /* Add transition for smooth zooming effect */
+    }
+
+    .xzoom-container:hover img {
+        transform: scale(1.5);
+        /* Zoom in when hovering */
+    }
+
+    .description {
+        flex: 1;
+        margin-left: 20px;
+        text-align: left;
+    }
+
+    .description h1 {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    .description p {
+        font-size: 16px;
+        line-height: 1.5;
+    }
+
+    .add {
+        font-size: 18px;
+        padding: 15px 30px;
+        margin-top: 20px;
+        background-color: #3498db;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn:hover {
+        background-color: #2980b9;
+    }
+
+    hr.style-one {
+        border: 0;
+        height: 1px;
+        background: #333;
+        background-image: linear-gradient(to right, #ccc, #333, #ccc);
+        margin: 60px 0;
+    }
+
+    ul {
+        margin-right: 27px;
+        list-style: none;
+        text-align: center;
+    }
+
+    ul li {
+        line-height: 50px;
+    }
+
+
+    .carousel-control-prev,
+    .carousel-control-next {
+        color: black;
+        /* Set the color of the toggle buttons */
+    }
+
+    .carousel-control-prev-icon {
+        background-color: rgba(8, 8, 8, 0.5);
+        margin-right: 10px;
+    }
+
+    .carousel-control-next-icon {
+        background-color: rgba(8, 8, 8, 0.5);
+        /* Set the background color of the toggle buttons */
+        margin-left: 10px;
+    }
+
+    .xzoom-container {
+        height: 400px;
+        width: 100%;
+        overflow: hidden;
+    }
+
+    .xzoom-container img {
+        transition: transform 0.5s;
+        /* Add transition for smooth zooming effect */
+    }
+
+    .xzoom-container:hover img {
+        transform: scale(1.5);
+        /* Zoom in when hovering */
+    }
+
+    @media (min-width: 200px) and (max-width: 991px) {
+        .magnifier {
+            left: 2px !important;
+        }
+
+        .xzoom {
+            margin-top: 40px;
+        }
+
+        .description {
+            text-align: center;
+            margin-right: 0px;
+        }
+
+        .firstBox {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0px auto 0;
+            padding: 10px;
+            width: 100%;
+        }
+
+        .description h1 {
+            margin: 50px 0 10px 0;
+            font-weight: 300;
+            text-align: center;
+        }
+    }
+</style>
+
+
+<!-- Your existing HTML content -->
+
+<div class="container firstBox">
+    <div id="imageCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+            {{#each datas.images}}
+            <div class="carousel-item {{#if @first}}active{{/if}}">
+                <div class="xzoom-container">
+                    <img class="xzoom" src="/croppedImages/{{this}}" alt="Slide {{@index}}">
+                </div>
+            </div>
+            {{/each}}
+            <button class="carousel-control-prev" type="button" data-bs-target="#imageCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#imageCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+
+
+    </div>
+    <div class="  description">
+        <h1 style="font-weight:bolder; text-align:center;">{{datas.name}}</h1>
+        <p style="text-align:center;">{{datas.description}}</p>
+        {{#if datas.ProductDiscountedPrice}}
+        <p style="margin-left: 40px; text-align:center;">₹{{datas.ProductDiscountedPrice}}<span
+                style="text-decoration: line-through; margin-left: 15px;">₹{{datas.price}}</span></p>
+        {{else}}
+        <p style="margin-left: 40px; text-align:center;">₹{{datas.price}}</p>
+        {{/if}}
+        <div>
+            <form style="text-align: center; margin-left:25px;" action="/addToCart/{{datas._id}}" method="post"
+                onclick="checkStock(event,{{datas.stock}})" id="addForm"><button class="btn btn-primary add">Add to
+                    cart</button>
+        </div>
+    </div>
+</div>
+</div>
+<div class="container">
+    <h2 style="color: rgb(13, 159, 159);margin-bottom: 30px; text-align: center; margin-left: 30px;">Book Specification
+    </h2>
+    <ul style="list-style: none; text-align: center;">
+        <li>pubisher: {{datas.publisher}}</li>
+        <li>published: {{date}}</li>
+        <li>Title: {{datas.name}}</li>
+        <li>Category: {{datas.category}}</li>
+        <li>Author: {{datas.author}}</li>
+        <li>Number of Pages: {{datas.pages}}</li>
+    </ul>
+
+    <hr class="style-one">
+    <h2 style="color: rgb(14, 151, 151);margin-bottom: 30px;text-align: center;">Reviews</h2>
+</div>
+
+
+
+<script>
+    function checkStock(event, count) {
+        if (count == 0) {
+            event.preventDefault()
+            displayMessage('sorry the selected product is out of Stock', 'error-message')
+            alert('product is out of stock')
+            return;
+        }
+        document.getElementById('addForm').submit();
+        return;
+    }
+</script>
+
+<script src="https://code.jquery.com/jquery-3.4.0.min.js"
+    integrity="sha384-JUMjoW8OzDJw4oFpWIB2Bu/c6768ObEthBMVSiIx4ruBIEdyNSUQAjJNFqT5pnJ6" crossorigin="anonymous">
+    </script>
+
+<script src="/javascripts/zscript.js"></script>
+<script src="/javascripts/zoomsl.min.js"></script>
+<!-- Your existing scripts -->

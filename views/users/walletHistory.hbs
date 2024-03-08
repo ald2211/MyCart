@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wallet History</title>
+    <style>
+        .scrollable-table {
+            max-height: 400px;
+            /* Set your desired max height */
+            overflow-y: auto;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container mt-5">
+        <div class="card p-4">
+            <h2 class="text-center mb-4">Wallet History</h2>
+
+            <!-- Wallet History Table with vertical scroll -->
+            <div class="scrollable-table">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Date</th>
+                            <th scope="col">Transaction Type</th>
+                            <th scope="col">Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each history}}
+                        <tr>
+                            <td>{{this.formattedDate}}</td>
+                            <td>{{this._doc.transactionType}}</td>
+                            <td>₹{{this._doc.amount}}.00</td>
+                        </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

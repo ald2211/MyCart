@@ -1,0 +1,171 @@
+<style>
+    .container {
+        background-color: #ffffff;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        border-radius: 10px;
+        margin-top: 20px;
+    }
+
+    h2,
+    h1 {
+        color: #007bff;
+    }
+
+    .breadcrumbs a {
+        text-decoration: none;
+        color: #007bff;
+    }
+
+    .breadcrumbs a:hover {
+        color: black;
+    }
+
+    .fa-solid,
+    .fas {
+        font-weight: 900;
+        font-size: 30px;
+        margin-right: 20px;
+        color: black;
+    }
+
+    .fa-solid {
+        transition: border-bottom 0.1s ease;
+    }
+
+    .fa-solid:hover {
+        border-bottom: 2px solid #000;
+        /* Change the color and thickness as needed */
+        padding-bottom: 3px;
+        /* Change the color and thickness as needed */
+    }
+
+    .cart-count {
+        background-color: #23800b;
+        color: white;
+        border-radius: 28%;
+        padding: 0px 6px;
+        font-size: 12px;
+        position: relative;
+        top: 0%;
+        left: -18px;
+        bottom: 21px;
+    }
+</style>
+<title>Your Wallet</title>
+
+<div class="container mt-5">
+    {{#if message}}
+    {{#if message.type}}
+    <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+        <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="close"></button>
+        <strong>Success:</strong> {{message.message}}
+    </div>
+    {{else}}
+    <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+        <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="close"></button>
+        <strong>Failed:</strong>
+        {{message.message}}
+    </div>
+    {{/if}}
+    {{/if}}
+
+    <div class="row justify-content-center align-items-center">
+
+        <!-- Wallet Section -->
+        <div class="col-md-6 mb-4">
+            <div class="card p-4">
+                <h2 class="text-center">Your Wallet</h2>
+                <h4 class="text-center mb-3">Balance: ₹{{userWallet.Userwallet}}.00</h4>
+                <!-- Replace with dynamic balance -->
+            </div>
+            <a href="/walletHistory/{{userWallet._id}}" class="btn btn-secondary mt-2">Wallet History</a>
+        </div>
+
+        <!-- Referral Section -->
+        <div class="col-md-6 mb-4">
+            <div class="card p-4">
+                <h2 class="text-center mb-4">Referral</h2>
+
+                <!-- Enter Referral Code Section -->
+                <div class="mb-3">
+                    <p>if you have referral code use it to get ₹200 rupees wallet amount</p>
+                    <h4 class="text-center mb-3">Enter Referral Code</h4>
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="referralCode" placeholder="enterReferralCode">
+                        <button onclick="applyReferalCode('{{userWallet.Referalcode}}')"
+                            class="btn btn-secondary">Apply</button>
+                    </div>
+                    <div id="error-message" class="text-danger mt-2"></div>
+                </div>
+
+                <!-- Display Referral Link Section -->
+                <div class="mb-3">
+                    <p>share it to your friends and get ₹300 rupees wallet amount for every new join</p>
+                    <p class="mb-0"><strong>Your Referral Code:</strong></p>
+                    <input type="text" class="form-control mb-2" id="code" value="{{userWallet.Referalcode}}" readonly>
+                    <button onclick="copyReferralCode()" class="btn btn-secondary">Copy Code</button>
+                    <p style="margin-top: 5px;" class="mb-0"><strong>Your Referral Link:</strong></p>
+                    <input type="text" class="form-control mb-2" id="referralLink"
+                        value="http://localhost:3000/signup?linkCode={{userWallet.Referalcode}}" readonly>
+                    <button onclick="copyReferralLink()" class="btn btn-secondary">Copy Link</button>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+    function applyReferalCode(dupeCheck) {
+        var referralCodeInput = document.getElementById("referralCode");
+        var errorMessage = document.getElementById("error-message");
+
+        // Check if the input field is empty
+        if (referralCodeInput.value.trim() === "") {
+
+            errorMessage.innerText = "Referral code cannot be empty.";
+            return;
+        }
+
+        if (referralCodeInput.value === dupeCheck) {
+            errorMessage.innerText = "invalid referal code.";
+            return
+        }
+        fetch('/applyReferal', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ referal: referralCodeInput.value })
+        })
+            .then(res => res.json)
+            .then(message => {
+                if (message.success) {
+                    location.href = '/getWallet'
+                } else {
+                    location.href = '/getWallet'
+                }
+            })
+            .catch(err => {
+                console.log('error:', err);
+                location.href = '/getWallet'
+
+            })
+    }
+
+    function copyReferralLink() {
+        var referralLink = document.getElementById("referralLink");
+        referralLink.select();
+        document.execCommand("copy");
+        alert('Referral link copied to clipboard!');
+    }
+    function copyReferralCode() {
+        var rcode = document.getElementById("code");
+        rcode.select();
+        document.execCommand("copy");
+        alert('Referral code copied to clipboard!');
+    }
+</script>

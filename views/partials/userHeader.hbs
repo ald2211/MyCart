@@ -1,0 +1,56 @@
+<style>
+    .navbar{
+     background-color: white;   
+    }
+</style>
+<nav class="navbar navbar-expand-lg navbar-light ">
+    <a class="navbar-brand" href="#"> <img src="/images/logo.png" alt="Logo" width="100%" height="90"
+            class="d-inline-block align-top"></a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent" style="justify-content: space-around;">
+        <form class="form-inline my-2 my-lg-0" action="/searchUser" method="post">
+            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search"
+                style="border-radius: 30px;" name="search">
+            <button class="btn btn-dark my-2 my-sm-0 searchBtn" type="submit"
+                style="border-radius: 0px 30px 30px 0px;margin-left: -20px;">Search</button>
+        </form>
+
+        <ul class="navbar-nav d-flex" style="height: 49px;">
+            <li class="nav-item active">
+                <a style="margin-left: 5px;" class="nav-link" href="/home"><i class="fa-solid fa-house"></i></a>
+            </li>
+            <li class="nav-item ml-2">
+                <a class="nav-link" href="#"><i class="fa-solid fa-heart"></i></a>
+            </li>
+            <li class="nav-item ml-2">
+                <a class="nav-link" href="/profile"><i class="fa-solid fa-user"></i></a>
+            </li>
+            <li class="nav-item ml-2">
+                {{#if count}}
+                <a class="nav-link" href="/cart"><i class="fa-solid fa-cart-shopping"></i><span id="cart"
+                        class="cart-count">{{count.[0].itemCount}}</span></a>
+                {{else}}
+                <a class="nav-link" href="/cart"><i class="fa-solid fa-cart-shopping"></i><span id="cart"
+                        class="cart-count" style="background-color: red;">0</span></a>
+                {{/if}}
+            </li>
+            <li class="nav-item ml-2">
+                <a class="nav-link" href="/getWallet"><i class="fa-solid fa-wallet"></i></a>
+            </li>
+            {{#if public}}
+            <li class="nav-item ml-2">
+                <form action="/login" method="get"><button type="submit" class="btn btn-dark"
+                        style="margin-top: 4px;">LogIn</button></form>
+            </li>
+            {{else}}
+            <li class="nav-item ml-2">
+                <form action="/logout" method="get"><button type="submit" class="btn btn-dark"
+                        style="margin-top: 4px;">LogOut</button></form>
+            </li>
+            {{/if}}
+        </ul>
+    </div>
+</nav>

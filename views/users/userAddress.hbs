@@ -1,0 +1,173 @@
+<style>
+  body {
+    background-color: #f4f4f4;
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+  }
+
+  .fa-solid,
+  .fas {
+    font-weight: 900;
+    font-size: 30px;
+    margin-right: 20px;
+    color: black;
+  }
+
+  .fa-solid {
+    transition: border-bottom 0.1s ease;
+  }
+
+  .fa-solid:hover {
+    border-bottom: 2px solid #000;
+    /* Change the color and thickness as needed */
+    padding-bottom: 3px;
+    /* Change the color and thickness as needed */
+  }
+
+  .cart-count {
+    background-color: #23800b;
+    color: white;
+    border-radius: 28%;
+    padding: 0px 6px;
+    font-size: 12px;
+    position: relative;
+    top: 0%;
+    left: -18px;
+    bottom: 21px;
+  }
+
+  .container-full-height {
+    min-height: 100vh;
+    padding: 20px;
+  }
+
+  .address-card {
+    padding: 20px;
+    background-color: #fff;
+    /* White background */
+    border: 1px solid #ddd;
+    /* Light border color */
+    border-radius: 8px;
+    margin-top: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    /* Add subtle shadow */
+  }
+
+  h1 {
+    font-size: 2.5rem;
+    color: #333;
+    /* Dark text color */
+  }
+
+  h4 {
+    color: #333;
+    /* Dark text color */
+  }
+
+  p {
+    margin-bottom: 10px;
+    color: #555;
+    /* Medium-dark text color */
+  }
+
+  .btn-outline-dark {
+    color: #333;
+    /* Dark text color */
+    border-color: #333;
+    /* Dark border color */
+  }
+
+  .btn-outline-dark:hover {
+    background-color: #333;
+    /* Dark background on hover */
+    color: #fff;
+    /* White text on hover */
+  }
+
+  .breadcrumbs {
+    margin: 20px 0;
+    font-size: 16px;
+  }
+
+  .breadcrumbs a {
+    text-decoration: none;
+    color: #007bff;
+  }
+
+  .breadcrumbs a:hover {
+    color: black;
+  }
+</style>
+<div class="container-fluid container-full-height">
+  {{#if message}}
+  {{#if message.type}}
+  <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+    <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="close"></button>
+    <strong>Success:</strong> {{message.message}}
+  </div>
+  {{else}}
+  <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+    <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="close"></button>
+    <strong>Failed:</strong>
+    {{message.message}}
+  </div>
+  {{/if}}
+  {{/if}}
+  <div class="container-fluid container-full-height">
+    <div class="breadcrumbs">
+      <a href="/">Home</a> >
+      <a href="/profile">Profile</a> >
+      <a href="/address">Manage Address</a>>
+    </div>
+    <p style="text-align: right;"><a href="/addAddress" class="btn btn-outline-dark">Add Address</a></p>
+    <div class="row">
+      <div class="col-md-6 offset-md-3">
+        <h1 class="mb-4">Manage Addresses</h1>
+
+        <!-- Address Cards -->
+        {{#if Address}}
+        {{#each Address}}
+        <div class="address-card">
+          <h4>{{this.addressName}} Address</h4>
+          <p><strong>Full Name:</strong> {{this.name}}</p>
+          <p><strong>Phone Number:</strong> {{this.number}}</p>
+          <p><strong>Address:</strong> {{this.Address}}</p>
+          <p><strong>City:</strong> {{this.city}}</p>
+          <p><strong>Pincode:</strong> {{this.pincode}}</p>
+          <p><strong>State:</strong> {{this.state}}</p>
+          <p><strong>Country:</strong> {{this.country}}</p>
+          <div class="mt-2" style="display: flex;">
+            <a style="width: 72px;color: white;font-size: 16px;" href="/editAddress/{{this._id}}" type="button"
+              class="btn btn-warning">Edit</a>
+            <form style="margin-left:10px" action="/deleteAddress/{{this._id}}" method="post"><button type="submit"
+                class="btn btn-danger">Delete</button></form>
+          </div>
+        </div>
+        {{/each}}
+        {{else}}
+        <p style="text-align: center;">no address added</p>
+        {{/if}}
+        <!-- Add more address cards here -->
+      </div>
+    </div>
+  </div>
+  <nav aria-label="Page navigation example">
+    <ul class="pagination justify-content-center align-items-center">
+      <li class="page-item">
+        <a class="page-link" href="#" aria-label="Previous">
+          <span aria-hidden="true">&laquo;</span>
+          <span class="sr-only">Previous</span>
+        </a>
+      </li>
+      {{#each pgn }}
+      <li class="page-item"><a class="page-link" href="/address?page={{this}}">{{this}}</a></li>
+      {{/each}}
+
+      <li class="page-item">
+        <a class="page-link" href="#" aria-label="Next">
+          <span aria-hidden="true">&raquo;</span>
+          <span class="sr-only">Next</span>
+        </a>
+      </li>
+    </ul>
+  </nav>

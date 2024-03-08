@@ -1,0 +1,269 @@
+<style>
+    .fa-solid,
+    .fas {
+        font-weight: 900;
+        font-size: 30px;
+        margin-right: 20px;
+        color: black;
+    }
+
+    .error-message {
+
+        color: #df071dd6;
+        padding: 10px;
+        margin: 10px 0;
+        border-radius: 5px;
+        position: absolute;
+        top: 130px;
+        left: 40%;
+    }
+
+    .fa-solid {
+        transition: border-bottom 0.1s ease;
+    }
+
+    .fa-solid:hover {
+        border-bottom: 2px solid #000;
+        /* Change the color and thickness as needed */
+        padding-bottom: 3px;
+        /* Change the color and thickness as needed */
+    }
+
+    .col-md-3 {
+        margin-bottom: 3rem;
+    }
+
+    .card-header {
+        background-color: white;
+        border: none;
+    }
+
+    .cart-count {
+        background-color: #23800b;
+        color: white;
+        border-radius: 28%;
+        padding: 0px 6px;
+        font-size: 12px;
+        position: relative;
+        top: 0%;
+        left: -18px;
+        bottom: 21px;
+    }
+
+    .card:hover {
+        transform: scale(1.05);
+        /* Adjust the scaling factor as needed */
+        transition: transform 0.3s ease;
+    }
+
+    .cart-item {
+        border-bottom: 1px solid #ddd;
+        padding: 10px;
+        margin-bottom: 10px;
+    }
+
+    .total-section {
+        margin-top: 20px;
+    }
+
+    .quantity-input {
+        width: 60px;
+        text-align: center;
+    }
+
+    .viewImg img {
+        width: 100%;
+    }
+
+    .viewImg {
+        width: 150px;
+    }
+
+    @media (max-width: 991px) {
+
+        .navbar-collapse {
+            margin-bottom: 260px;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .searchBtn {
+            position: absolute;
+            left: 70%;
+        }
+
+        .form-control {
+            width: 70%;
+        }
+    }
+
+    @media (max-width:768px) {
+        .removebtn {
+            margin-top: 8px;
+        }
+
+        .row {
+            text-align: center;
+        }
+
+        .viewImg {
+            margin: auto;
+        }
+
+        .total-section {
+            text-align: center;
+        }
+    }
+</style>
+<section>
+    <div class="container mt-5">
+        <h2>Your Cart</h2>
+
+        <!-- Cart Items -->
+        <div id="cart-items">
+            {{#if carts}}
+            {{#each carts}}
+            {{#if this.products}}
+            {{#each this.products}}
+            <!-- Sample Cart Item -->
+            <div class="cart-item">
+                <div class="row">
+                    <div class="col-md-2 viewImg">
+                        <img src="/croppedImages/{{this.product.images.[0]}}" alt="Product Image" class="img-fluid">
+                    </div>
+                    <div class="col-md-6">
+                        <h5><strong>name:</strong>{{this.product.name}}</h5>
+                        {{#if this.product.CategoryDiscountedPrice}}
+                        <p><strong>price:</strong> ₹{{this.product.CategoryDiscountedPrice}}
+                            <span
+                                style="text-decoration: line-through; margin-left: 6px;">₹{{this.product.price}}</span>
+                            <span style="color: #ccc;">category discount applied</span>
+                        </p>
+                        {{else}}
+                        {{#if this.product.ProductDiscountedPrice}}
+                        <p><strong>price:</strong> ₹{{this.product.ProductDiscountedPrice}}<span
+                                style="text-decoration: line-through; margin-left: 6px;">₹{{this.product.price}}</span>
+                        </p>
+                        {{else}}
+                        <p><strong>price:</strong> ₹{{this.product.price}}</p>
+                        {{/if}}
+                        {{/if}}
+                        <p><strong>author:</strong>{{this.product.author}}</p>
+                        <p><strong>publisher:</strong>{{this.product.publisher}}</p>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="input-group">
+                            <button class="btn btn-outline-secondary"
+                                onclick="decrementQuantity(this,'{{this._id}}',{{this.product.stock}},'{{this.product._id}}')">-</button>
+                            <input type="number" id="quantity" class="form-control quantity-input"
+                                value="{{this.quantity}}" min="1">
+                            <button class="btn btn-outline-secondary"
+                                onclick="incrementQuantity(this,'{{this._id}}',{{this.product.stock}},event,'{{this.product._id}}')">+</button>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <form action="/cartItemRemove/{{this.product._id}}" method="post"><button
+                                class="btn btn-danger removebtn" type="submit">Remove</button></form>
+                    </div>
+                </div>
+
+            </div>
+            {{/each}}
+            <!-- End of Sample Cart Item -->
+            <!-- Add more cart items dynamically -->
+
+        </div>
+        {{else}}
+        <p style="text-align:center;">no items</p>
+        {{/if}}
+        {{/each}}
+        <!-- Total Section -->
+        <div class="total-section" style="margin-bottom: 10px;">
+            <h4>Total:₹<span id="totalValue">{{total.[0].total}}</span> </h4>
+            <a href="/buy" class="btn btn-primary" id="proceedToBuy">Proceed to Buy</a>
+        </div>
+
+        {{else}}
+        <p style="text-align:center;">no items</p>
+        {{/if}}
+    </div>
+    <script>
+        function displayMessage(message, messageType) {
+            var messageDiv = document.createElement('div');
+            messageDiv.className = messageType;
+            messageDiv.innerHTML = message;
+            document.body.appendChild(messageDiv);
+            setTimeout(function () {
+                document.body.removeChild(messageDiv);
+            }, 3000);
+        }
+
+        document.getElementById('proceedToBuy').addEventListener('click', function (event) {
+            if (document.getElementById('totalValue').textContent == '') {
+                event.preventDefault();
+                displayMessage('Please add items to proceed.', 'error-message');
+                return;
+            }
+
+        })
+
+        function updateDom(updatedData) {
+            // Update the inner HTML of the span element with id "totalValue"
+            document.getElementById('totalValue').innerHTML = updatedData[0].total;
+            document.getElementById('cart').innerHTML = updatedData[0].itemCount;
+
+        }
+        // Sample JavaScript function to increment the quantity
+        async function incrementQuantity(buttonElement, productId, stock, event, ogId) {
+            var quantityInput = buttonElement.closest('.cart-item').querySelector('#quantity');
+
+            if (stock == 0) {
+                event.preventDefault()
+                displayMessage('sorry the product is outof stock.', 'error-message')
+
+                return;
+
+            } else {
+                quantityInput.value = parseInt(quantityInput.value) + 1;
+                await updateQuantity(productId, quantityInput.value, ogId);
+            }
+
+
+        }
+
+        // Sample JavaScript function to decrement the quantity (not less than 1)
+        async function decrementQuantity(buttonElement, productId, stock, ogId) {
+            var quantityInput = buttonElement.closest('.cart-item').querySelector('#quantity');
+            if (parseInt(quantityInput.value) > 1) {
+                quantityInput.value = parseInt(quantityInput.value) - 1;
+                const NewValue = -quantityInput.value;
+                await updateQuantity(productId, NewValue, ogId);
+            }
+        }
+
+        // Function to make a request to update the quantity on the server
+        async function updateQuantity(productId, newQuantity, ogId) {
+            try {
+                const response = await fetch(`/updateQuantity/${productId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ quantity: newQuantity, ogId: ogId })
+                });
+
+                if (!response.ok) {
+                    console.error('Failed to update quantity:', response.statusText);
+                }
+                const totalPrice = await response.json();
+
+                updateDom(totalPrice)
+                window.location.href = '/cart'
+
+            } catch (error) {
+                console.error('Error updating quantity:', error.message);
+            }
+        }
+
+    </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

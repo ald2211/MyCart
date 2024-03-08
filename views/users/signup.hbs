@@ -1,0 +1,393 @@
+<title>Document</title>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
+
+    /* Reseting */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Poppins', sans-serif;
+
+    }
+
+    .signup {
+        width: 189px;
+        height: 58px;
+        border-radius: 10px;
+        transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .signup:hover {
+        background-color: rgb(86, 86, 86);
+    }
+
+    body {
+        background-image: -webkit-gradient(linear, left top, right top, from(#4e63d7), to(#76bfe9)) !important;
+        background-image: linear-gradient(to right, #4e63d7 0%, #76bfe9 100%) !important;
+        min-height: 100vh;
+    }
+
+    .wrapper {
+        max-width: 850px;
+        background-color: #fff;
+        border-radius: 10px;
+        position: relative;
+        display: flex;
+        margin: 50px auto;
+        box-shadow: 0 8px 20px 0px #1f1f1f1a;
+        overflow: hidden;
+    }
+
+    .wrapper .form-left {
+        background: #3786bd;
+        border-top-left-radius: 10px;
+        border-bottom-left-radius: 10px;
+        padding: 20px 40px;
+        position: relative;
+        width: 100%;
+        color: #fff;
+    }
+
+    .wrapper h2 {
+        font-weight: 700;
+        font-size: 25px;
+        padding: 5px 0 0;
+        margin-bottom: 34px;
+        pointer-events: none;
+    }
+
+    .wrapper .form-left p {
+        font-size: 0.9rem;
+        font-weight: 300;
+        line-height: 1.5;
+        pointer-events: none;
+    }
+
+    .wrapper .form-left .text {
+        margin: 20px 0 25px;
+    }
+
+    .wrapper .form-left p span {
+        font-weight: 700;
+    }
+
+    .wrapper .form-left input {
+        padding: 15px;
+        background: #fff;
+        border-top-left-radius: 5px;
+        border-bottom-right-radius: 5px;
+        width: 180px;
+        border: none;
+        margin: 15px 0 50px 0px;
+        cursor: pointer;
+        color: #333;
+        font-weight: 700;
+        font-size: 0.9rem;
+        appearance: unset;
+        outline: none;
+    }
+
+    .wrapper .form-left input:hover {
+        background-color: #f2f2f2;
+    }
+
+    .wrapper .form-right {
+        padding: 20px 40px;
+        position: relative;
+        width: 100%;
+    }
+
+    .wrapper .form-right h2 {
+        color: #3786bd;
+    }
+
+    .wrapper .form-right label {
+        font-weight: 600;
+        font-size: 15px;
+        color: #666;
+        display: block;
+        margin-bottom: 8px;
+    }
+
+    .wrapper .form-right .input-field {
+        width: 100%;
+        padding: 10px 15px;
+        border: 1px solid #e5e5e5;
+        border-top-left-radius: 5px;
+        border-bottom-right-radius: 5px;
+        outline: none;
+        color: #333;
+    }
+
+    .wrapper .form-right .input-field:focus {
+        border: 1px solid #31a031;
+    }
+
+
+    .wrapper .option {
+        display: block;
+        position: relative;
+        padding-left: 30px;
+        margin-bottom: 12px;
+        font-size: 0.95rem;
+        font-weight: 900;
+        cursor: pointer;
+        user-select: none
+    }
+
+    .wrapper .option input {
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
+        height: 0;
+        width: 0
+    }
+
+    .wrapper .checkmark {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 18px;
+        width: 18px;
+        background-color: #fff;
+        border: 2px solid #ddd;
+        border-radius: 2px
+    }
+
+    .wrapper .option:hover input~.checkmark {
+        background-color: #f1f1f1
+    }
+
+    .wrapper .option input:checked~.checkmark {
+        border: 2px solid #e5e5e5;
+        background-color: #fff;
+        transition: 300ms ease-in-out all
+    }
+
+    .wrapper .checkmark:after {
+        content: "\2713";
+        position: absolute;
+        display: none;
+        color: #3786bd;
+        font-size: 1rem;
+    }
+
+    .wrapper .option input:checked~.checkmark:after {
+        display: block
+    }
+
+    .wrapper .option .checkmark:after {
+        left: 2px;
+        top: -4px;
+        width: 5px;
+        height: 10px
+    }
+
+    .wrapper .register {
+        padding: 12px;
+        background: #3786bd;
+        border-top-left-radius: 5px;
+        border-bottom-right-radius: 5px;
+        width: 130px;
+        border: none;
+        margin: 6px 0 50px 0px;
+        cursor: pointer;
+        color: #fff;
+        font-weight: 700;
+        font-size: 15px;
+    }
+
+    .wrapper .register:hover {
+        background-color: #3785bde0;
+    }
+
+    .wrapper a {
+        text-decoration: none;
+    }
+
+    @media (max-width: 860.5px) {
+        .wrapper {
+            margin: 50px 5px;
+        }
+    }
+
+
+    @media (max-width: 767.5px) {
+        .wrapper {
+            flex-direction: column;
+            margin: 30px 20px;
+        }
+
+        .wrapper .form-left {
+            border-bottom-left-radius: 0px;
+        }
+
+
+    }
+
+    @media (max-width: 575px) {
+
+        .wrapper {
+            margin: 30px 15px;
+        }
+
+        .wrapper .form-left {
+            padding: 25px;
+        }
+
+        .wrapper .form-right {
+            padding: 25px;
+        }
+    }
+</style>
+</head>
+
+<body>
+    {{#if message}}
+    {{#if message.type}}
+    <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+        <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="close"></button>
+        <strong>Success:</strong> {{message.message}}
+    </div>
+    {{else}}
+    <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+        <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="close"></button>
+        <strong>Failed:</strong>
+        {{message.message}}
+    </div>
+    {{/if}}
+    {{/if}}
+    <div class="wrapper">
+        <div class="form-left">
+            <h2 class="text-uppercase">About Us</h2>
+            <p>
+            <p>
+                Welcome to MyCart! Your premier online book store for captivating narratives. Sign up now to explore our
+                curated collection catering to every reader's taste. Whether you're a seasoned bookworm or just starting
+                your literary journey, MyCart is your go-to destination.
+            </p>
+
+            </p>
+            <blockquote>
+                "Discover the magic of stories at MyCart - where every book is a journey waiting to be explored."
+            </blockquote>
+            <div class="form-field">
+                <button class="signup" onclick="loginPage()"><a href="/login" style="color: rgb(2, 2, 2);"
+                        class="account ">Have an MyCart Account?</a></button>
+            </div>
+        </div>
+        <form class="form-right needs-validation" id="login-form" action="/submit" method="post" novalidate>
+            <h2 class="text-uppercase">Registration form</h2>
+            <div class="row">
+                <div class="mb-3">
+                    <label>UserName</label>
+                    <input type="text" id="username" name="name" class="form-control" required>
+                    <div class="invalid-feedback">
+                        Please enter your username.
+                    </div>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label>Your Email</label>
+                <input type="email" id="email" name="email" class="form-control" required>
+                <div class="invalid-feedback">
+                    Please enter a valid email address.
+                </div>
+            </div>
+            <div class="row">
+                <div class="mb-3">
+                    <label>Your Number </label>
+                    <input type="tel" id="number" name="number" class="form-control" pattern="\d{10}" required>
+                    <div class="invalid-feedback">
+                        Please enter a valid 10-digit number.
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6 mb-3">
+                    <label>Password</label>
+                    <input type="password" id="password" name="password" class="form-control"
+                        pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+])[A-Za-z\d!@#$%^&*()_+]{8,}$"
+                        required>
+                    <small id="passwordHelp" class="form-text text-muted" style="width: 200px;">
+                        Password requirements:
+                        <a href="#" onclick="showDetails()">Read</a>
+                        <span id="additionalDetails" style="display: none;">
+                            <br>
+                            details:
+                            <ul>
+                                <li>Minimum length: 8 characters</li>
+                                <li>At least 1 uppercase letter</li>
+                                <li>At least 1 lowercase letter</li>
+                                <li>At least 1 number</li>
+                                <li>At least 1 special character</li>
+                            </ul>
+                        </span>
+                    </small>
+                    <div class="invalid-feedback">
+                        Please enter a strong password.
+                    </div>
+                </div>
+                <div class="col-sm-6 mb-3">
+                    <label>Confirm Password</label>
+                    <input type="password" name="cpwd" id="cpwd" class="form-control" required>
+                    <div class="invalid-feedback">
+                        Passwords do not match.
+                    </div>
+                </div>
+            </div>
+            <div class="form-field">
+                <button type="submit" class="btn btn-primary">Register</button>
+            </div>
+        </form>
+
+        <script>
+
+            // Custom JavaScript for additional validation or interactions
+            function loginPage() {
+                location.href = '/users/login'
+            }
+            function showDetails() {
+                var details = document.getElementById("additionalDetails");
+                if (details.style.display === "none") {
+                    details.style.display = "inline";
+                } else {
+                    details.style.display = "none";
+                }
+            }
+            (function () {
+                'use strict';
+
+                var forms = document.querySelectorAll('.needs-validation');
+
+                Array.from(forms).forEach(function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (!form.checkValidity()) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+
+                        // Custom validation for strong password and password match
+                        var password = document.getElementById('password').value;
+                        var confirmPassword = document.getElementById('cpwd').value;
+
+                        if (password !== confirmPassword) {
+                            document.getElementById('cpwd').setCustomValidity("Passwords do not match.");
+                        } else {
+                            document.getElementById('cpwd').setCustomValidity('');
+                        }
+
+                        // Check for strong password
+                        var strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+])[A-Za-z\d!@#$%^&*()_+]{8,}$/;
+                        if (!strongPasswordRegex.test(password)) {
+                            document.getElementById('password').setCustomValidity("Password must be strong.");
+                        } else {
+                            document.getElementById('password').setCustomValidity('');
+                        }
+
+                        form.classList.add('was-validated');
+                    }, false);
+                });
+            })();
+        </script>

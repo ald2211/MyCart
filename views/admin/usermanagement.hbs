@@ -1,0 +1,186 @@
+<title>user home</title>
+<style>
+  .navbar {
+    background-color: #007bff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  .nav-link {
+    color: #fff;
+  }
+
+  .form-control:focus {
+    box-shadow: none;
+    border: solid 1px black;
+  }
+
+  .btn:focus {
+    box-shadow: none;
+  }
+
+  @media (max-width: 574px) {
+    #logout {
+      position: absolute;
+      left: 63%;
+    }
+
+    .special {
+      align-items: center;
+      flex-direction: column;
+    }
+
+  }
+
+  @media (max-width:991px) {
+    .nav-link {
+      text-align: center;
+    }
+
+    .nav-link:hover {
+      border-bottom: solid 1px black;
+    }
+
+    .navbar-collapse {
+      margin-bottom: 205px;
+    }
+
+    .lout {
+      width: 100%;
+    }
+
+  }
+</style>
+</head>
+
+<body>
+
+  <div class="container special" style="display: flex;justify-content: space-between;margin-top: 20px;">
+    <div class="FirstOne"><i class="fa-solid fa-users" style="font-size: 45px;"></i><span
+        style="font-size: 30px;margin-left: 10px;">Users</span></div>
+    <form class="form-inline my-2 my-lg-0" action="/admin/searchUser" method="post">
+      <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="searchuser"
+        style="border-radius: 30px 0px 0 30px;">
+      <button class="btn btn-dark my-2 my-sm-0" type="submit"
+        style="border-radius: 0px 30px 30px 0px;margin-left: -20px;" id="logout">Search</button>
+    </form>
+
+  </div>
+  <div class="container mt-5">
+    <table class="table">
+      <thead class="thead-dark">
+        <tr>
+          <th scope="col">UserName</th>
+          <th scope="col">Email</th>
+          <th scope="col">Contact no.</th>
+          <th scope="col">Action</th>
+          <th scope="col">Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each data}}
+        <tr>
+          <th scope="row">{{this.name}}</th>
+          {{#if this.gmail}}
+          <td>{{this.gmail}}</td>
+          {{else}}
+          <td>{{this.email}}</td>
+          {{/if}}
+          {{#if this.gmail}}
+          <td style="color: lightgrey;">signed in through google</td>
+          {{else}}
+          <td>{{this.number}}</td>
+          {{/if}}
+          <td>
+            {{#if this.isBlocked}}
+            <form action="/admin/unBlock/{{this._id}}" method="post">
+              <button class="btn-success" type="submit">Unblock</button>
+            </form>
+            {{else}}
+            <form id="deleteForm" action="/admin/block/{{this._id}}" method="post">
+              <button class="btn-danger" type="button" onclick=" showDeleteModal('{{this._id}}')"
+                style="width: 75px;">Block</button>
+            </form>
+            {{/if}}
+          </td>
+          <td>{{#if this.isBlocked}}Blocked {{else}}Active{{/if}}</td>
+        </tr>
+        {{/each}}
+
+      </tbody>
+    </table>
+    <!-- Bootstrap Modal -->
+    <div class="modal" tabindex="-1" role="dialog" id="deleteModal">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Confirmation</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true" onclick="hideModal()">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <p>Are you sure you want to block this User?</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="hideModal()">Cancel</button>
+            <button type="button" class="btn btn-danger" onclick="blockUser()">Block</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <nav aria-label="Page navigation example">
+    <ul class="pagination justify-content-center align-items-center">
+      <li class="page-item">
+        <a class="page-link" href="#" aria-label="Previous">
+          <span aria-hidden="true">&laquo;</span>
+          <span class="sr-only">Previous</span>
+        </a>
+      </li>
+      {{#each pgn }}
+      <li class="page-item"><a class="page-link" href="/admin/manageUser?page={{this}}">{{this}}</a></li>
+      {{/each}}
+
+      <li class="page-item">
+        <a class="page-link" href="#" aria-label="Next">
+          <span aria-hidden="true">&raquo;</span>
+          <span class="sr-only">Next</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+  <hr style="height: 1px;background: #1917170d;margin-top: 50px;">
+
+  <script>
+    // Function to check screen size and show alert
+    function checkScreenSize() {
+      if (window.innerWidth <= 521) {
+        alert("!!--turn off portrait orientation and tilt your phone for better experience");
+      }
+    }
+    // Check screen size initially and add a listener for resize events
+    checkScreenSize();
+    window.addEventListener('resize', checkScreenSize);
+
+    //confirmation while blocking
+    var currentUserId;
+
+    function showDeleteModal(userId) {
+      currentUserId = userId;
+      $('#deleteModal').modal('show');
+    }
+
+    function blockUser() {
+      // Setting the form action dynamically based on the current category ID
+      var form = document.getElementById('deleteForm');
+      form.action = "/admin/block/" + currentUserId;
+
+
+      // Submit the form
+      form.submit();
+    }
+    function hideModal() {
+      $('#deleteModal').modal('hide');
+    }
+  </script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

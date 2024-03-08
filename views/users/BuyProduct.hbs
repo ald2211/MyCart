@@ -1,0 +1,381 @@
+<title></title>
+<!-- Include Razorpay library -->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+
+<style>
+    body {
+        background-color: #f8f9fa;
+        height: 100vh;
+    }
+
+    .container {
+        margin-top: 50px;
+    }
+
+    .address-list {
+        list-style: none;
+        padding: 0;
+    }
+
+    .address-item {
+        border: 1px solid #ddd;
+        padding: 10px;
+        margin-bottom: 10px;
+    }
+
+    .add-address-form {
+        display: none;
+    }
+
+    .fixed-column {
+        position: sticky;
+        top: 0;
+    }
+
+    .breadcrumbs {
+        margin: 20px 0;
+        font-size: 16px;
+    }
+
+    .breadcrumbs a {
+        text-decoration: none;
+        color: #007bff;
+    }
+
+    .breadcrumbs a:hover {
+        color: black;
+    }
+
+    .error-message {
+
+        color: #df071dd6;
+        padding: 10px;
+        margin: 10px 0;
+        border-radius: 5px;
+        position: absolute;
+        top: 30px;
+        left: 30%;
+    }
+
+    .paymentPolicy {
+
+        text-decoration: none;
+        color: #4285f4;
+        /* Set your desired link color */
+        font-weight: lighter;
+    }
+
+    .paymentPolicy:hover {
+        text-decoration: underline;
+        /* Underline on hover, for example */
+    }
+</style>
+
+<div class="container mt-0">
+    <div class="container-fluid container-full-height">
+
+        <div class="row">
+            {{#if message}}
+            {{#if message.type}}
+            <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+                <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="close"></button>
+                <strong>Success:</strong> {{message.message}}
+            </div>
+            {{else}}
+            <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+                <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="close"></button>
+                <strong>Failed:</strong>
+                {{message.message}}
+            </div>
+            {{/if}}
+            {{/if}}
+            <div class="col-md-8">
+                <h2>Order Summary</h2>
+                <div style="max-height: 130px; overflow-y: auto;">
+
+                    <!-- Product list -->
+                    {{#each items}}
+                    {{#if this.products}}
+                    {{#each this.products}}
+                    <ul class="list-group">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span style="width: 130px;">{{this.product.name}}</span>
+                            <span style="width: 100px;">{{this.quantity}}</span>
+                            {{#if this.product.ProductDiscountedPrice}}
+                            <p class="badge bg-primary" style="width: 120px;">
+                                <span> ₹{{this.product.ProductDiscountedPrice}} </span>
+                                <span
+                                    style="text-decoration: line-through; margin-left: 6px;">₹{{this.product.price}}</span>
+                            </p>
+                            {{else}}
+                            <span class="badge bg-primary" style="width: 120px;"> ₹{{this.product.price}} </span>
+                            {{/if}}
+                        </li>
+                        {{/each}}
+                        {{else}}
+                        no products selected
+                        <!-- Add more products as needed -->
+                    </ul>
+                    {{/if}}
+                    {{/each}}
+                </div>
+                <h2 style="margin-top:5px;margin-bottom:0px;">Shipping Information</h2>
+                <div style="max-height: 260px; overflow-y: auto; margin-top: 20px;">
+                    <!-- Multiple Addresses -->
+                    <div>
+                        <ul class="address-list">
+                            {{#if address}}
+                            {{#each address}}
+                            <li class="address-item">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="selectedAddress"
+                                        id="address{{@index}}" value="{{this.addressName}}" {{#if
+                                        @first}}checked{{/if}}>
+                                    <label class="form-check-label" for="address{{@index}}">
+                                        <h4>{{this.addressName}}</h4>
+                                        <p>Full Name: {{this.name}}</p>
+                                        <p>Address: {{this.Address}}</p>
+                                        <p>City: {{this.city}}</p>
+                                        <p>PIN Code: {{this.pincode}}</p>
+                                    </label>
+                                </div>
+                                <a href="/editAddress/{{this._id}}" class="btn btn-outline-dark">Edit Address</a>
+                            </li>
+                            {{/each}}
+                            {{/if}}
+                        </ul>
+                    </div>
+                </div>
+                <!-- Button to toggle add address form -->
+                <a class="btn btn-outline-dark mt-3" href="/addAddress">Add New Address</a>
+            </div>
+
+            <!-- Fixed Column: Order Total and Payment Method -->
+            <div class="col-md-4 fixed-column">
+                <div class="sticky-top" style="top: 15px;">
+                    <h2>Order Total</h2>
+                    <!-- Order total -->
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Total Amount</h5>
+                            {{#if discount}}
+                            <p class="card-text"><span style="text-decoration: line-through;"
+                                    id="total">₹{{total}}</span><span id="total">₹{{discount}}</span></p>
+                            {{else}}
+                            <p class="card-text">₹<span id="total">{{total}}</p>
+                            {{/if}}
+                            <p>DeliveryCharge: <span id="dlvcharge">{{deliveryCharge}}</span></p>
+                            <a class="paymentPolicy" href="/admin/paymentPolicy">payment policey</a>
+                            <br>
+                            <button type="button" class="btn btn-primary" style="margin-top: 5px;"
+                                onclick="checkout(event)" id="rzb">Place your
+                                order</button>
+                        </div>
+                    </div>
+                    <!--coupen code-->
+
+                    <div class="card coupon-card" style="margin-top: 12px;">
+                        <div class="card-body">
+                            <h5 class="card-title text-center">Enter Coupon Code</h5>
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control coupon-input"
+                                    placeholder="Enter your coupon code" aria-label="Coupon Code"
+                                    aria-describedby="apply-coupon-btn" id="coupenCode">
+                                <button class="btn btn-primary coupon-btn" type="button"
+                                    onclick="applyCoupen('{{total}}')" id="apply-coupon-btn">Apply
+                                    Coupon</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Payment Method -->
+                    <h2 class="mt-4">Select Payment Method</h2>
+                    <form>
+                        <div class="mb-3">
+
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="radio" name="paymentMethod" id="razorpay"
+                                    value="razorpay">
+                                <label class="form-check-label" for="razorpay">Razorpay</label>
+                            </div>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="radio" name="paymentMethod" id="COD" value="COD">
+                                <label class="form-check-label" for="COD">Cash on Delivery (COD)</label>
+                            </div>
+
+                            <!-- Add more payment methods as needed -->
+                        </div>
+
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    //apply coupen code
+    function applyCoupen(total) {
+        const coupenCode = document.getElementById('coupenCode').value;
+        console.log('code:', coupenCode)
+        fetch('/coupen/apply', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ coupenCode: coupenCode, total: total })
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    location.href = '/buy'
+                } else {
+                    location.href = '/buy'
+                }
+            })
+            .catch(err => {
+                console.log('err:', err)
+                location.href = '/buy'
+
+            })
+    }
+
+    function displayMessage(message, messageType) {
+        var messageDiv = document.createElement('div');
+        messageDiv.className = messageType;
+        messageDiv.innerHTML = message;
+        document.body.appendChild(messageDiv);
+        setTimeout(function () {
+            document.body.removeChild(messageDiv);
+        }, 3000);
+    }
+    // Function to handle checkout
+
+    function checkout(event) {
+        const selectedPaymentMethod = document.querySelector('input[name="paymentMethod"]:checked');
+        const selectedAddress = document.querySelector('input[name="selectedAddress"]:checked');
+        const total = document.getElementById('total').textContent;
+        const deliveryCharge = document.getElementById('dlvcharge').textContent;
+
+
+        if (!selectedPaymentMethod || !selectedAddress) {
+            event.preventDefault();
+            displayMessage('Please select a payment method and address before placing your order.', 'error-message');
+            return;
+        }
+        if (total > 1000 && selectedPaymentMethod.value == 'COD') {
+            event.preventDefault();
+            displayMessage('Please go for online Payment for order greater than 1000.', 'error-message');
+            return;
+        }
+
+        event.preventDefault();
+
+        const checkoutData = {
+            selectedPaymentMethod: selectedPaymentMethod.value,
+            selectedAddress: selectedAddress.value,
+            total: total,
+            deliveryCharge: deliveryCharge
+        };
+
+        $.ajax({
+            url: '/orders/checkOut',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(checkoutData),
+            success: function (data) {
+                if (data.cod_success) {
+                    const flashMessage = {
+                        message: 'order placed successfully'
+                    };
+                    window.location.href = '/orders?' + 'flashMessageContent=' + encodeURIComponent(flashMessage.message);
+                } else {
+                    console.log('data:', data)
+                    const orderData = data.raz_order;
+                    const user = data.user
+                    razorPayment(orderData, event, user);
+                }
+            },
+            error: function (error) {
+                console.error('Error:', error);
+            }
+        });
+    }
+
+    function razorPayment(order, event, user) {
+
+        var options = {
+            "key": "rzp_test_Bj7oownxupJuE3", // Enter the Key ID generated from the Dashboard
+            "amount": order.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+            "currency": "INR",
+            "name": "MyCart", //your business name
+            "description": "order in myCart",
+            "image": "http://localhost:3000/images/logo.png",
+            "order_id": order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+            "handler": function (resp) {
+                //returning data to server
+
+
+                verifyPayment(resp, order)
+            },
+            "prefill": { //We recommend using the prefill parameter to auto-fill customer's contact information, especially their phone number
+                "name": user.name, //your customer's name
+                "email": user.email,
+                "contact": `${user.number}`  //Provide the customer's phone number for better conversion rates 
+            },
+            "notes": {
+                "address": "Razorpay Corporate Office"
+            },
+            "theme": {
+                "color": "#3399cc"
+            }
+        }
+        var rzp1 = new Razorpay(options);
+        rzp1.on('payment.failed', function (resp) {
+            console.log('error:', resp.error.code);
+            console.log('error:', resp.error.description);
+            console.log('error:', resp.error.source);
+            console.log('error:', resp.error.step);
+            console.log('error:', resp.error.reason);
+            console.log('error:', resp.error.metadata.order_id);
+            console.log('error:', resp.error.metadata.payment_id);
+            const failMessage = {
+                message: 'Payment failed',
+                type: false
+            };
+            window.location.href = '/orders?' + 'failMessageContent=' + encodeURIComponent(failMessage.message)
+        });
+        rzp1.open();
+
+    }
+
+    async function verifyPayment(payment, order) {
+        try {
+            fetch('/orders/verifyPayment', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ payment: payment, razorOrder: order })
+            })
+                .then(res => res.json())
+                .then(status => {
+                    if (status.status) {
+                        const flashMessage = {
+                            message: 'order placed successfully',
+
+                        };
+                        window.location.href = '/orders?' + 'flashMessageContent=' + encodeURIComponent(flashMessage.message)
+                    }
+                })
+                .catch(err => {
+                    console.log('error:', err)
+                })
+        } catch (error) {
+            console.error('Error verifying payment:', error);
+        }
+    }
+</script>

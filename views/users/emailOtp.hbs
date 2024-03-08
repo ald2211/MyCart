@@ -1,0 +1,88 @@
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Lemon&family=Lilita+One&display=swap');
+
+  body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+  }
+
+  .login-container {
+    background-color: #fff;
+    padding: 20px;
+    padding-bottom: 30px;
+    text-align: center;
+
+  }
+
+  .login-container label {
+    text-align: left;
+    display: block;
+    margin-bottom: 5px;
+  }
+
+  .login-container input {
+    background-color: #f9f9f9;
+    /* Background color for input fields */
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 30px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .button-text {
+    text-align: left;
+    margin-top: 15px;
+    margin-bottom: 6px;
+    font-size: 13px;
+  }
+
+  .btn {
+    padding: .375rem 8.75rem;
+    border-radius: 30px;
+    font-family: 'Lemon', serif;
+  }
+
+  .logo {
+    margin: auto;
+    max-width: 199px;
+    margin-bottom: 15px;
+  }
+
+  #login-form {
+    background-color: rgba(229, 229, 229, 1);
+    padding: 50px 70px;
+    border-radius: 30px;
+  }
+
+  @media (min-width: 768px) and (max-width: 992px) {
+    .btn {
+      padding: .375rem 5.75rem
+    }
+  }
+</style>
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="login-container">
+        <img src="/images/logo.png" alt="Logo" class="logo">
+        <form id="login-form" action="/emails/email" method="post">
+          <p style="font-size: 20px;">Please enter your Email for OTP verification</p>
+          <!-- Password Input -->
+          <div class="form-group-container">
+            <div class="form-group">
+              <label for="password">Email</label>
+              <input type="email" class="form-control" id="Number" name="email" required style="border-radius: 0px;">
+            </div>
+          </div>
+          <button type="submit" class="btn btn-warning" id="login-button" style="color: black;">Continue</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  sessionStorage.removeItem('expirationTime');
+</script>

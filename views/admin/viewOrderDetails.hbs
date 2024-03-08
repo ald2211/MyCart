@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order Details</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f8f9fa;
+      margin: 20px;
+    }
+
+    .container {
+      background-color: #ffffff;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      border-radius: 10px;
+    }
+
+    h2 {
+      color: #007bff;
+    }
+
+    table {
+      width: 100%;
+      margin-top: 20px;
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      border: 1px solid #dee2e6;
+      padding: 10px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f5ececdf;
+    }
+
+    td img {
+      max-width: 50px;
+      height: auto;
+      display: block;
+      margin-top: 5px;
+    }
+
+    .product-scroll-container {
+      max-height: 450px;
+      /* Set the maximum height for the container */
+      overflow-y: auto;
+      /* Enable vertical scrollbar when content exceeds the height */
+    }
+
+
+
+    .product-details {
+      display: flex;
+      /* Make the product details flex container */
+    }
+
+    .product-item {
+      width: 250px;
+      box-sizing: border-box;
+      border: 1px solid #dee2e6;
+      padding: 10px;
+      text-align: left;
+      margin-right: 10px;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <h2>Order Details</h2>
+
+    <table>
+      <tr>
+        <th>Order ID</th>
+        <td>{{order.orderId}}</td>
+      </tr>
+      <tr>
+        <th>Customer Name</th>
+        <td>{{order.username}}</td>
+      </tr>
+      <tr>
+        {{#if order.gmail}}
+        <th>Email</th>
+        <td>{{order.gmail}}</td>
+        {{else}}
+        <th>Email</th>
+        <td>{{order.email}}</td>
+        {{/if}}
+      </tr>
+      {{#if order.number}}
+      <tr>
+        <th>Phone Number</th>
+        <td>{{order.number}}</td>
+      </tr>
+      {{/if}}
+      <tr>
+        <th>Address</th>
+        <td>{{order.address}}</td>
+      </tr>
+      <tr>
+        <th>Pincode</th>
+        <td>{{order.pincode}}</td>
+      </tr>
+      <tr>
+        <th>City</th>
+        <td>{{order.city}}</td>
+      </tr>
+      <tr>
+        <th>Ordered Products</th>
+        <td>
+          <div class="product-scroll-container">
+            {{#each order.products}}
+            <div class="product-item">
+              <span>Name: {{this.name}}</span><br>
+              <span style="margin-left: 9px;">Price:₹{{this.price}}.00</span><br>
+              <img width="50px" src="/croppedImages/{{this.image}}" alt=""><br>
+              <span style="margin-left: 9px;">DiscountedPrice:₹{{this.Discount}}.00</span><br>
+              <span style="margin-left: 9px;">Quantity: {{this.quantity}}</span>
+            </div>
+            {{/each}}
+          </div>
+        </td>
+      </tr>
+      {{#if order.coupenDiscount}}
+      <tr>
+        <th>Coupen Discount</th>
+        <td>{{order.coupenDiscount}}%</td>
+      </tr>
+      {{/if}}
+      <tr>
+        <th>Order Status</th>
+        <td>{{order.paymentStatus}}</td>
+      </tr>
+
+      <tr>
+        <th>Delivery Charge</th>
+        <td>₹{{order.fixedShippingCharge}}.00</td>
+      </tr>
+      <tr>
+        <th>Order Total</th>
+        <td>₹{{order.total}}.00</td>
+      </tr>
+    </table>
+  </div>
+
+</body>
+
+</html>

@@ -1,0 +1,239 @@
+<style>
+  .fa-solid,
+  .fas {
+    font-weight: 900;
+    font-size: 30px;
+    margin-right: 20px;
+    color: black;
+  }
+
+  .fa-solid {
+    transition: border-bottom 0.1s ease;
+  }
+
+  .fa-solid:hover {
+    border-bottom: 2px solid #000;
+    /* Change the color and thickness as needed */
+    padding-bottom: 3px;
+    /* Change the color and thickness as needed */
+  }
+
+  .cart-count {
+    background-color: #23800b;
+    color: white;
+    border-radius: 28%;
+    padding: 0px 6px;
+    font-size: 12px;
+    position: relative;
+    top: 0%;
+    left: -18px;
+    bottom: 21px;
+  }
+
+  .col-md-3 {
+    margin-bottom: 3rem;
+  }
+
+  .tog {
+    margin-right: 5px;
+  }
+
+  .tog:hover {
+    border: solid 1px gray;
+  }
+
+  .tog:focus {
+    box-shadow: none;
+  }
+
+  .card-header {
+    background-color: white;
+    border: none;
+  }
+
+  .card:hover {
+    transform: scale(1.05);
+    /* Adjust the scaling factor as needed */
+    transition: transform 0.3s ease;
+  }
+
+  .fa-regular.fa-heart:hover {
+    color: red;
+  }
+
+  .prImg {
+    height: 271px;
+  }
+
+  .prImg.img {
+    width: 100%;
+    height: 100%;
+  }
+
+  .catDrop {
+    margin-top: 5px;
+  }
+
+  .catDrop:hover {
+    background: grey;
+  }
+
+  .error-message {
+
+    color: #df071dd6;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+    position: fixed;
+    top: 45px;
+    left: 35%;
+  }
+
+  .offer-details {
+    font-size: 15px;
+    color: #333;
+    background-color: #ffc107;
+    /* Yellow background color, you can choose another color */
+    padding: 10px;
+    border-radius: 5px;
+  }
+
+  @media (min-width: 768px) and (max-width: 992px) {
+    .prImg {
+      height: 200px;
+    }
+
+    .prImg.img {
+      width: 100%;
+      height: 100%;
+    }
+
+    .buybtn {
+      margin-top: 5px;
+    }
+  }
+
+  @media (min-width: 200px) and (max-width: 768px) {
+    .prImg {
+      height: auto;
+    }
+
+    .prImg.img {
+      width: 100%;
+      height: 100%;
+    }
+
+    .spcl {
+      text-align: center;
+    }
+  }
+
+  @media (max-width: 992px) {
+
+    .navbar-collapse {
+      margin-bottom: 260px;
+    }
+  }
+
+  @media (max-width: 576px) {
+    .searchBtn {
+      position: absolute;
+      left: 70%;
+    }
+
+    .form-control {
+      width: 70%;
+    }
+  }
+</style>
+</head>
+
+<body>
+  <section>
+    {{#if message}}
+    <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+      <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="close"></button>
+      <strong>Success:</strong> {{message}}
+    </div>
+    {{/if}}
+
+  </section>
+  {{#if product}}
+  <div class="container mt-5">
+    <h1 style="margin-bottom: 25px;">{{product.[0].category}}
+      {{#if offer}}
+      <span class="offer-details">{{offer.discount_percentage}}%off</span>
+    </h1>
+    {{/if}}
+    <div class="row">
+
+      {{#each product}}
+      <div class="col-md-3 mb-4">
+        <div class="card pb-5">
+          <div class="card-header text-right">
+            <i class="fa-regular fa-heart" style="font-size: 24px;"></i>
+          </div>
+          <a href="/productDetails/{{_id}}">
+            <div class="prImg"><img src="/croppedImages/{{this.images.[0]}}" class="card-img-top mx-auto d-block"
+                alt="Card Image" style="max-width: 200px; height: auto;"></div>
+          </a>
+        </div>
+        <div class="card-body text-center">
+          <h5 class="card-title">{{this.name}}</h5>
+          {{#if this.ProductDiscountedPrice}}
+          <p class="card-text" style="font-size: 16px; font-weight:400;">Price:₹{{this.ProductDiscountedPrice}}<span
+              style="text-decoration: line-through; margin-left: 15px;"
+              style="font-size: 16px; font-weight:400;">₹{{this.price}}</span></p>
+          {{else}}
+          <p class="card-text" style="font-size: 16px; font-weight:400;">Price:₹{{this.price}}<span
+              style="text-decoration: line-through; margin-left: 15px;"> </span></p>
+          {{/if}}
+        </div>
+        <div class="spcl" style="margin-top: 10px;margin-left: 15px;">
+          <form style="text-align: center;" action="/addToCart/{{this._id}}" method="post"
+            onclick="checkStock(event,{{this.stock}})" id="addForm"><button class="btn btn-primary">Add to
+              cart</button>
+          </form>
+
+        </div>
+      </div>
+      {{/each}}
+      {{else}}
+      <p style="text-align: center;">no products found</p>
+      {{/if}}
+    </div>
+    <nav aria-label="Page navigation example">
+      <ul class="pagination justify-content-center align-items-center">
+        <li class="page-item">
+          <a class="page-link" href="#" aria-label="Previous">
+            <span aria-hidden="true">&laquo;</span>
+            <span class="sr-only">Previous</span>
+          </a>
+        </li>
+        {{#each pgn }}
+        <li class="page-item"><a class="page-link" href="/filterCategory?page={{this}}">{{this}}</a></li>
+        {{/each}}
+
+        <li class="page-item">
+          <a class="page-link" href="#" aria-label="Next">
+            <span aria-hidden="true">&raquo;</span>
+            <span class="sr-only">Next</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    function checkStock(event, count) {
+      if (count == 0) {
+        event.preventDefault()
+        displayMessage('sorry the selected product is out of Stock', 'error-message')
+        alert('product is out of stock')
+        return;
+      }
+      document.getElementById('addForm').submit();
+      return;
+    }
+  </script>

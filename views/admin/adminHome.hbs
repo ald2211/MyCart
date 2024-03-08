@@ -1,0 +1,708 @@
+<title>user home</title>
+<!-- Include Chart.js library -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.js"></script>
+
+<style>
+  /* Add this to your existing style block */
+
+  body {
+    background-color: #f8f9fa;
+  }
+
+  footer {
+    width: 100%;
+    position: absolute;
+    left: 0px;
+    margin: 0px;
+  }
+
+  .navbar {
+    background-color: #007bff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  .nav-link {
+    color: #fff;
+  }
+
+  .containers {
+    display: flex;
+  }
+
+  .search-container {
+    max-width: 400px;
+    margin: 20px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+
+  .search-container label {
+    display: block;
+    margin-bottom: 10px;
+  }
+
+  .search-container input,
+  .search-container select {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 15px;
+    box-sizing: border-box;
+  }
+
+  .search-container button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  .search-container button:hover {
+    background-color: #45a049;
+  }
+
+  .results-container {
+    flex-grow: 1;
+    margin: 20px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    display: none;
+    /* Initially hidden */
+  }
+
+  .results-container h2 {
+    margin-bottom: 15px;
+  }
+
+  .row {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .col-md-6 {
+    padding: 10px;
+  }
+
+  h5 {
+    margin-bottom: 15px;
+  }
+
+
+  .container {
+    background-color: #ffffff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    border-radius: 10px;
+    margin-top: 35px;
+  }
+
+  .FirstChild {
+    margin-top: 23px;
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .FirstChild button {
+    width: 210px;
+
+  }
+
+  .card {
+    margin-bottom: 20px;
+    text-align: center;
+  }
+
+  .crown-icon {
+    width: 20px;
+    height: 20px;
+    fill: gold;
+    margin-right: 5px;
+    animation: rotateAnimation 6s infinite alternate;
+  }
+
+  .bodys {
+    border: 2px solid #ddd;
+    /* Border color */
+    border-radius: 8px;
+    /* Rounded corners */
+    padding: 15px;
+    /* Padding inside the card-body */
+    background-color: #f8f9fa;
+    /* Background color */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    /* Box shadow for a subtle lift */
+  }
+
+  .product-image {
+    max-height: 150px;
+    /* Set a maximum height for the image */
+    object-fit: cover;
+    /* Ensure the image covers the entire container */
+    margin-bottom: 10px;
+  }
+
+  .bestProducts {
+    display: flex;
+    justify-content: space-evenly;
+  }
+
+  @keyframes rotateAnimation {
+    0% {
+      transform: translate(-50%, -50%) rotate(0deg);
+    }
+
+    50% {
+      transform: translate(-50%, -50%) rotate(360deg);
+    }
+
+    100% {
+      transform: translate(-50%, -50%) rotate(360deg);
+    }
+  }
+
+  @media (max-width: 574px) {
+    #logout {
+      border-radius: 0px 30px 30px 0px;
+      margin-left: auto !important;
+      margin-top: -38px !important;
+    }
+  }
+
+  @media (max-width: 991px) {
+    .nav-link {
+      text-align: center;
+    }
+
+    .nav-link:hover {
+      border-bottom: solid 1px black;
+    }
+
+    .navbar-collapse {
+      margin-bottom: 205px;
+    }
+
+    .lout {
+      width: 100%;
+    }
+  }
+</style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>Dashboard</h1>
+    <div class="container  FirstChild">
+      <button type="button" class="btn btn-warning" id="login-button" onclick="manageCoupen()">Coupen</button>
+      <button type="button" class="btn btn-warning" id="Tostock" onclick="manageStock()">Stock</button>
+      <button type="button" class="btn btn-warning" id="login-button" onclick="manageOffer()">Offer</button>
+      <button type="button" class="btn btn-warning" id="login-button" onclick="manageBanner()">Banner</button>
+      <button type="button" style="margin-top:10px;" class="btn btn-warning" id="login-button"
+        onclick="manageCharges()">DeliveryCharge</button>
+      <button type="button" style="margin-top:10px;" class="btn btn-warning" id="login-button"
+        onclick="manageReferals()">Referral</button>
+    </div>
+  </div>
+  <div class="container mt-5">
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 justify-content-center">
+
+      <!-- Replace the following div blocks with your content -->
+      <h2 style="width: 100%;">Products Details</h2>
+      <div class="col">
+        <div class="card text-white bg-primary">
+          <div class="card-body text-center">
+            <h1 class="display-3">{{products.[0].totalProducts}}</h1>
+            <p class="lead">Total Products</p>
+          </div>
+        </div>
+      </div>
+      <div class="col">
+        <div class="card text-white bg-info">
+          <div class="card-body text-center">
+            <h1 class="display-3">{{category.[0].listed}}</h1>
+            <p class="lead"> Categories Listed</p>
+          </div>
+        </div>
+      </div>
+      <div class="col">
+        <div class="card text-white bg-danger">
+          <div class="card-body text-center">
+            <h1 class="display-3">{{category.[0].unlisted}}</h1>
+            <p class="lead"> Categories Unlisted</p>
+          </div>
+        </div>
+      </div>
+      <h2 style="width: 100%;">Users Status </h2>
+      <div class="col">
+        <div class="card text-white bg-success">
+          <div class="card-body text-center">
+            <h1 class="display-3">{{users.[0].activeUsers}}</h1>
+            <p class="lead">Active Users</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col">
+        <div class="card text-white bg-danger">
+          <div class="card-body text-center">
+            <h1 class="display-3">{{users.[0].blockedUsers}}</h1>
+            <p class="lead">Blocked Users</p>
+          </div>
+        </div>
+      </div>
+      <h2 style="width: 100%;">Orders Details</h2>
+      <div class="col">
+        <div class="card text-white bg-warning">
+          <div class="card-body text-center">
+            <h1 class="display-3">{{orders.[0].pendingOrders}}</h1>
+            <p class="lead">Pending Orders</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col">
+        <div class="card text-white bg-danger">
+          <div class="card-body text-center">
+            <h1 class="display-3">{{orders.[0].cancelledOrders}}</h1>
+            <p class="lead">Cancelled Orders</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col">
+        <div class="card text-white bg-success">
+          <div class="card-body text-center">
+            <h1 class="display-3">{{orders.[0].completedOrders}}</h1>
+            <p class="lead">Completed Orders</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--best selling product and category-->
+    <div class="container mt-5" style="background-color: #ffffff; color: white; padding: 20px;">
+
+      <div class="card">
+        <div class="card-header bg-primary text-white">
+          <h2>
+            <i class="fa-solid fa-crown crown-icon" style="color: #f0b000;"></i>
+            Best Selling Products
+          </h2>
+        </div>
+        <div class="bestProducts">
+          {{#each bp}}
+          <div class="card-body .bodys">
+            <img class="product-image" src="/croppedImages/{{this.productImage.[0]}}" alt="Product Image">
+            <h5 class="card-title" id="productName">name:{{this.productName}}</h5>
+            <p class="card-text" id="productDetails">Price:{{this.productPrice}}</p>
+            <p class="card-text" style="color: green;">Total Selled:{{this.totalQuantity}}</p>
+
+          </div>
+          {{/each}}
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header bg-primary text-white">
+          <h2>
+            <i class="fa-solid fa-crown crown-icon" style="color: #f0b000;"></i>
+            Best Selling Categories
+          </h2>
+        </div>
+        {{#each bc}}
+        <div class="bestProducts">
+          <div class="card-body bodys">
+            <p class="card-text" id="categoryName">name:{{this._id}}</p>
+            <p class="card-text" style="color: green;">Total Selled:{{this.totalQuantity}}</p>
+          </div>
+          {{/each}}
+        </div>
+      </div>
+
+    </div>
+    <!--total profit-->
+    <div class="container mt-5" style="background-color: #197e19;color: white;">
+      <h1 style="text-align: center;">Total Income generated: ₹{{orders.[0].income}}.00</h1>
+    </div>
+    <!-- New Row for Charts -->
+    <div class="row mt-5">
+      <div class="col-md-5 mb-2">
+        <h5>Category wise Sales</h5>
+        <!-- Pie Chart -->
+        <canvas id="pieChart" width="200" height="100"></canvas>
+      </div>
+
+      <div class="col-md-6 mb-4">
+        <div>
+          <label for="timeFrame">Select Time Frame:</label>
+          <select id="timeFrame" onchange="updateChart()">
+            <option value="daily">Daily</option>
+            <option value="weekly">Weekly</option>
+            <option value="monthly">Monthly</option>
+            <option value="yearly">Yearly</option>
+          </select>
+        </div>
+        <h5 class="barSales"> </h5>
+        <!-- Bar Chart -->
+        <canvas id="salesChart" width="400" height="300" style="margin-right: 40px;"></canvas>
+      </div>
+    </div>
+    <div class="col mb-4 containers">
+      <div class="search-container">
+
+        <h2> Sales Report</h2>
+        <form id="search-form">
+          <label for="start_date">Starting Date:</label>
+          <input type="date" id="start_date" name="start_date" required>
+
+          <label for="end_date">Ending Date:</label>
+          <input type="date" id="end_date" name="end_date" required>
+          <button type="button" onclick="searchReports()">Search</button>
+        </form>
+      </div>
+      <div class="results-container" id="report-container">
+        <h1 class="mb-3" style="border-bottom: solid 1px black;text-align:center;padding-bottom:8px"><img
+            src="/images/logo.png" alt="" style="width: 146px;"></h1>
+        <h2 style="color: black;">Sales Report</h2>
+        <h4 style="color: black; font-size:16px;">[<span id="fromDate"
+            style="font-size: 16px; font-weight:500;margin-right: 10px;"></span>to<span id="toDate"
+            style="font-size: 16px; font-weight:500; margin-left:10px;"></span> ]</h4>
+        <table class="table table-bordered" style=" border-collapse: collapse;">
+          <p class="generated"></p>
+          <thead>
+            <tr>
+              <th>ProductName</th>
+              <th>Description</th>
+              <th>Price</th>
+              <th>Quantity</th>
+              <th>DiscountedPrice</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+
+          <tbody id="reportBody">
+            <!-- dynamic data -->
+          </tbody>
+
+        </table>
+        <button class="btn btn-outline-success cb1" onclick="printReport('salesReport.csv')" style="margin-top: 5px;">To
+          csv</button>
+        <button class="btn btn-outline-success cb2" onclick="generatePDF()">To pdf</button>
+      </div>
+      <p id="reportSpace" style="margin-top: 145px; margin-left: 84px;">Report Space ></p>
+    </div>
+
+  </div>
+
+
+  <script>
+
+    let report;
+    function searchReports() {
+      const dateElement = document.querySelector('.generated').style.visibility = 'hidden'
+      const elements = document.querySelectorAll('.cb1, .cb2');
+      elements.forEach(element => {
+        element.style.display = 'block';
+        element.style.marginTop = '5px';
+        element.style.width = '16%';
+      });
+      // Get the selected dates
+      const startDate = document.getElementById('start_date').value;
+      const endDate = document.getElementById('end_date').value;
+
+      // Perform the search logic here and update the results in the results-container
+      fetch(`/orders/report?startDate=${startDate}&endDate=${endDate}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+      })
+        .then(response => response.json())
+        .then(data => {
+          // Handle the received data, update the results in the results-container
+
+          report = data
+          renderReportTable(data);
+
+          // For now, just toggle the visibility of the results-container
+          var resultsContainer = document.getElementById('report-container');
+          resultsContainer.style.display = 'block';
+          document.getElementById('reportSpace').style.display = 'none'
+        })
+        .catch(error => console.error('Error fetching data:', error));
+    }
+    //report Table
+    function renderReportTable(report) {
+      const tbody = document.getElementById('reportBody');
+      let totalSum = 0;
+
+      // Remove existing child nodes from the tbody
+      while (tbody.firstChild) {
+        tbody.removeChild(tbody.firstChild);
+      }
+
+      // Check if there is data in the 'report' array
+      if (report.length > 0) {
+        // Iterate over each item in the 'report' array
+        report.forEach(item => {
+          const row = document.createElement('tr');
+
+          // Create and append table cells for each property
+
+          const productNameCell = document.createElement('td');
+          productNameCell.textContent = item._id;
+          row.appendChild(productNameCell);
+
+          const descriptionCell = document.createElement('td');
+          descriptionCell.textContent = item.description;
+          row.appendChild(descriptionCell);
+
+          const priceCell = document.createElement('td');
+          priceCell.textContent = `₹${item.price}.00`;
+          row.appendChild(priceCell);
+
+          const quantityCell = document.createElement('td');
+          quantityCell.textContent = item.totalQuantity;
+          row.appendChild(quantityCell);
+
+          const DiscountedPrice = document.createElement('td');
+          DiscountedPrice.textContent = `₹${item.finalAmount}.00`;
+          row.appendChild(DiscountedPrice);
+
+          const totalCell = document.createElement('td');
+          totalCell.textContent = `₹${item.totalAmount}.00`;
+          row.appendChild(totalCell);
+
+
+
+          // Update the total sum
+          totalSum += item.totalAmount;
+
+          // Append the row to the tbody
+          tbody.appendChild(row);
+          //from and to date
+          document.getElementById('fromDate').innerHTML = document.getElementById('start_date').value.split('-').reverse().join('-');
+          document.getElementById('toDate').innerHTML = document.getElementById('end_date').value.split('-').reverse().join('-');
+        });
+
+        // Add a subtotal row
+        const subtotalRow = document.createElement('tr');
+        const emptyCell = document.createElement('td');
+        emptyCell.setAttribute('colspan', '5');
+
+        subtotalRow.appendChild(emptyCell);
+
+        const subtotalCell = document.createElement('td');
+        subtotalCell.textContent = `SalesTotal: ₹${totalSum}.00`;
+        subtotalRow.appendChild(subtotalCell);
+
+        tbody.appendChild(subtotalRow);
+      } else {
+        // If there is no data in the 'report' array, display a message
+        const noResultRow = document.createElement('tr');
+        const noResultCell = document.createElement('td');
+        noResultCell.setAttribute('colspan', '6');
+        noResultCell.textContent = 'No searched result available.';
+        noResultRow.appendChild(noResultCell);
+        tbody.appendChild(noResultRow);
+      }
+    }
+    //covert to csv file
+    function printReport(filename) {
+
+
+      var Data = [];
+      var Rows = document.querySelectorAll('table tr');
+
+      // Loop through each row in the table
+      Rows.forEach(function (row) {
+        var Row = [];
+        var Cols = row.querySelectorAll("td,th");
+
+        // Loop through each cell in the row
+        Cols.forEach(function (col) {
+          Row.push(col.innerText);
+        });
+
+        Data.push(Row.join(","));
+      });
+
+      getCsv(Data.join("\n"), filename);
+    }
+    function getCsv(csv, filename) {
+      var csv_file = new Blob([csv], { type: 'text/csv' })
+      download_link = document.createElement("a");
+      download_link.download = filename;
+      download_link.href = window.URL.createObjectURL(csv_file);
+      download_link.style.display = "none";
+      document.body.appendChild(download_link)
+      download_link.click();
+    }
+    //report in pdf
+    function generatePDF() {
+      const elements = document.querySelectorAll('.cb1, .cb2');
+      elements.forEach(element => {
+        element.style.display = 'none';
+      });
+      const element = document.getElementById('report-container');
+
+      const dateElement = document.querySelector('.generated');
+      const currentDate = new Date();
+      dateElement.style.visibility = 'visible'
+      dateElement.innerText = `Generated on: ${currentDate.toLocaleString()}`;
+      dateElement.style.marginTop = '4px'; // Optional: Add margin to the generated date
+      html2pdf(element);
+    }
+    //path to particulart pages
+    function manageStock() {
+      window.location.href = "/products/stock"
+    }
+    function manageCoupen() {
+      window.location.href = "/admin/coupen"
+    }
+    function manageOffer() {
+      window.location.href = "/products/offer"
+    }
+    function manageBanner() {
+      window.location.href = "/admin/banner"
+    }
+
+    function manageCharges() {
+      window.location.href = "/admin/charges"
+    }
+    function manageReferals() {
+      window.location.href = "/admin/referal"
+    }
+
+    //pi chart
+    // Function to fetch data for category-wise product sales
+    async function fetchCategorySalesData() {
+      try {
+        const response = await fetch('/orders/categorySale', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const data = await response.json()
+        console.log('result:', data)
+        return data;
+
+
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        // Handle error
+      }
+    }
+
+    // Function to draw the pie chart
+    async function drawPieChart() {
+
+      const ctx = document.getElementById('pieChart').getContext('2d');
+      const categorySalesData = await fetchCategorySalesData();
+
+      const formattedData = categorySalesData.categoryWiseSale.map(category => [
+        category._id,
+        category.purchaseCount
+      ]);
+      new Chart(ctx, {
+        type: 'pie',
+        data: {
+          labels: formattedData.map((data) => data[0]),
+          datasets: [
+            {
+              data: formattedData.map((data) => data[1]),
+              backgroundColor: [
+                'rgba(255, 99, 132, 0.7)',
+                'rgba(54, 162, 235, 0.7)',
+                'rgba(255, 206, 86, 0.7)',
+                'rgba(75, 192, 192, 0.7)',
+                'rgba(153, 102, 255, 0.7)',
+                'rgba(255, 159, 64, 0.7)',
+              ],
+              borderColor: [
+                'rgba(255, 99, 132, 1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255, 1)',
+                'rgba(255, 159, 64, 1)',
+              ],
+              borderWidth: 1,
+            },
+          ],
+        },
+      });
+    }
+    // Function to fetch data for  sales
+    async function fetchSalesData(timeFrame) {
+      try {
+        const response = await fetch(`/orders/barChart?timeFrame=${timeFrame}`, {
+          method: 'GET'
+        });
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const data = await response.json();
+        return data;
+      } catch (error) {
+        console.error('Error fetching sales data:', error);
+        throw error;
+      }
+    }
+    // Function to draw the bar chart based on the selected time frame
+    async function drawSalesChart(timeFrame) {
+      const ctx = document.getElementById('salesChart').getContext('2d');
+
+      try {
+        // Fetch sales data from the server based on the selected time frame
+        const salesData = await fetchSalesData(timeFrame);
+        document.querySelector('.barSales').innerText = `${timeFrame} Sales`
+        // Check if a chart instance already exists on the canvas
+        const existingChart = Chart.getChart(ctx);
+
+        // Destroy the existing chart if it exists
+        if (existingChart) {
+          existingChart.destroy();
+        }
+
+        // Draw the new chart with the fetched sales data
+        new Chart(ctx, {
+          type: 'bar',
+          data: salesData,
+          options: {
+            scales: {
+              y: {
+                beginAtZero: true,
+              },
+            },
+          },
+        });
+      } catch (error) {
+        console.error('Error drawing sales chart:', error);
+      }
+    }
+
+    // Function to update the chart based on the selected time frame
+    function updateChart() {
+      const timeFrame = document.getElementById('timeFrame').value;
+      drawSalesChart(timeFrame);
+    }
+
+    // Call the function to draw the bar chart when the page is loaded
+    window.onload = function () {
+      updateChart()
+      drawPieChart();
+    }
+
+  </script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

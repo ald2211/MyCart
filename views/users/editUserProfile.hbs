@@ -1,0 +1,68 @@
+<style>
+  .breadcrumbs {
+    margin: 20px 0;
+    font-size: 16px;
+  }
+
+  .breadcrumbs a {
+    text-decoration: none;
+    color: #007bff;
+  }
+
+  .breadcrumbs a:hover {
+    color: black;
+  }
+</style>
+<div class="container">
+  <div class="container mt-5">
+    <div class="breadcrumbs">
+      <a href="/">Home</a> >
+      <a href="/profile">Profile</a> >
+      <a href="/editProfile">edit Profile</a>
+    </div>
+    <div class="row">
+      <div class="col-md-6 offset-md-3">
+        <h1 class="mb-4">Edit Your Profile</h1>
+
+        <!-- Edit Profile Form -->
+        <form enctype="multipart/form-data" action="/editProfile/{{user._id}}" method="post">
+          <div class="mb-3">
+
+            <p id="imageContainer">
+              {{#if user.image}}
+              <img src="{{user.image}}" alt="" id="image">
+              {{else}}
+              add your profile pic
+              {{/if}}
+            </p>
+            <input type="file" class="form-control" id="fileInput" onchange="viewImage(event)" name="image">
+          </div>
+
+          <div class="mb-3">
+            <label for="username" class="form-label">Username</label>
+            <input type="text" class="form-control" id="username" value="{{user.name}}" name="name" required>
+          </div>
+
+
+
+          <button type="submit" class="btn btn-primary">Save Changes</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  function viewImage(event) {
+    const fileInput = document.getElementById('fileInput');
+    const imagesContainer = document.getElementById('imageContainer');
+
+    // Clear existing images
+    imagesContainer.innerHTML = '';
+
+    const img = document.createElement('img');
+    img.src = URL.createObjectURL(fileInput.files[0]);
+    img.alt = 'Product Image';
+    img.style.maxWidth = '100px';
+    imagesContainer.appendChild(img);
+  }
+</script>

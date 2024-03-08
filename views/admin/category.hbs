@@ -1,0 +1,187 @@
+<style>
+    .navbar {
+        background-color: #007bff;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .nav-link {
+        color: #fff;
+    }
+
+    .badge-pill {
+        padding-right: 1.6em;
+        padding-left: 1.6em;
+        padding-top: 0.6rem;
+        padding-bottom: 0.6rem;
+        border-radius: 10rem;
+    }
+
+    .form-control:focus {
+        border: solid 1px black !important;
+        box-shadow: none;
+    }
+
+    .btn:focus {
+        box-shadow: none;
+    }
+
+    @media (max-width: 574px) {
+        .nav-link {
+            text-align: center;
+        }
+
+        .navbar-collapse {
+            margin-bottom: 205px;
+        }
+
+        .lout {
+            width: 100%;
+        }
+    }
+</style>
+
+<section>
+    <div class="container mt-4">
+        {{#if message}}
+        {{#if message.type}}
+        <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+            <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="close"></button>
+            <strong>Success:</strong> {{message.message}}
+        </div>
+        {{else}}
+        <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+            <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="close"></button>
+            <strong>Failed:</strong>
+            {{message.message}}
+        </div>
+        {{/if}}
+        {{/if}}
+        <h2>Category Management</h2>
+        <!-- Add Category Form -->
+        <div class="card mt-4">
+            <div class="card-header">
+                Add New Category
+            </div>
+            <div class="card-body">
+                <form action="/categories/register" method="post">
+                    <div class="form-group">
+                        <label for="CategoryName">Category Name:</label>
+                        <input type="text" class="form-control" id="categoryName" placeholder="Enter category name"
+                            name="name"
+                            onkeydown="return event.key !== ' ' || event.target.selectionStart !== event.target.selectionEnd"
+                            required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add Category</button>
+                </form>
+            </div>
+        </div>
+        <div class="container mt-5">
+            <!-- Search Bar -->
+            <form action="/categories/search" method="post">
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" placeholder="Search for categories..." aria-label="Search"
+                        name="search" aria-describedby="searchButton">
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary" type="submit" id="searchButton">Search</button>
+                    </div>
+                </div>
+            </form>
+            <!-- Category List -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    Category List
+                </div>
+                <div class="card-body">
+                    <ul class="list-group">
+                        {{#each display}}
+                        <!-- Example categories (you can dynamically generate these from your backend) -->
+                        <li class="list-group-item" style="padding: 30px;">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span style="width: 100px;">{{this.name}}</span>
+                                <span class="badge badge-primary badge-pill"></span>
+                                {{#if this.status}}
+                                <form id="deleteForm" action="/categories/unlist/{{this._id}}" method="post"><button
+                                        style="width: 100px;" type="button" class="btn btn-danger btn-sm"
+                                        onclick="showDeleteModal('{{this._id}}')">Unlist</button></form>
+                                {{else}}
+                                <form action="/categories/list/{{this._id}}" method="post"><button style="width: 100px;"
+                                        type="submit" class="btn btn-info btn-sm">list</button></form>
+                                {{/if}}
+                                <form action="/categories/edit/{{this._id}}" method="get"><button type="submit"
+                                        class="btn btn-primary btn-sm" style="width: 100px;">Edit</button></form>
+                            </div>
+                        </li>
+                        <!-- Bootstrap Modal -->
+                        <div class="modal" tabindex="-1" role="dialog" id="deleteModal">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Confirmation</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true" onclick="hideModal()">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>Are you sure you want to unlist this category?</p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                                            onclick="hideModal()">Cancel</button>
+                                        <button type="button" class="btn btn-danger"
+                                            onclick="deleteCategory()">Unlist</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {{/each}}
+                        <!-- Add more categories as needed -->
+                    </ul>
+
+                </div>
+            </div>
+        </div>
+</section>
+<nav aria-label="Page navigation example" style="margin-top: 10px;">
+    <ul class="pagination justify-content-center align-items-center">
+        <li class="page-item">
+            <a class="page-link" href="#" aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+                <span class="sr-only">Previous</span>
+            </a>
+        </li>
+        {{#each pgn }}
+        <li class="page-item"><a class="page-link" href="/categories?page={{this}}">{{this}}</a></li>
+        {{/each}}
+
+        <li class="page-item">
+            <a class="page-link" href="#" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+                <span class="sr-only">Next</span>
+            </a>
+        </li>
+    </ul>
+</nav>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    var currentCategoryId;
+
+    function showDeleteModal(categoryId) {
+        currentCategoryId = categoryId;
+        $('#deleteModal').modal('show');
+    }
+
+    function deleteCategory() {
+        // Set the form action dynamically based on the current category ID
+        var form = document.getElementById('deleteForm');
+        form.action = "/categories/unlist/" + currentCategoryId;
+
+        // Optional: You can add additional logic here before form submission
+
+        // Submit the form
+        form.submit();
+    }
+    function hideModal() {
+        $('#deleteModal').modal('hide');
+    }
+
+</script>

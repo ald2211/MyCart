@@ -1,0 +1,167 @@
+<style>
+    body {
+        padding: 20px;
+        background-color: #f8f9fa;
+    }
+
+    .container {
+        background-color: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+    }
+
+    h2 {
+        color: #007bff;
+    }
+
+    .add-stock-form {
+        max-width: 500px;
+        margin: 0 auto;
+        background-color: #f2f2f2;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+    }
+
+    .add-stock-form h4 {
+        color: #007bff;
+    }
+
+    .stock-status {
+        background-color: #e9ecef;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+
+    .stock-status h4 {
+        color: #6c757d;
+    }
+
+    .product-list {
+        background-color: #e9ecef;
+        border-radius: 10px;
+        padding: 20px;
+    }
+
+    .product-list h4 {
+        color: #6c757d;
+    }
+
+    .table th,
+    .table td {
+        border: none;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        border: none;
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+
+    .btn-danger {
+        background-color: #dc3545;
+        border: none;
+    }
+
+    .btn-danger:hover {
+        background-color: #c82333;
+    }
+
+    .error-message {
+
+        color: #df071dd6;
+        position: absolute;
+        top: 90px;
+        left: 40%;
+    }
+
+    .breadcrumbs {
+        margin: 20px 0;
+        font-size: 16px;
+    }
+
+    .breadcrumbs a {
+        text-decoration: none;
+        color: #007bff;
+    }
+
+    .breadcrumbs a:hover {
+        color: black;
+    }
+</style>
+
+<div class="container">
+    <div class="breadcrumbs">
+        <a href="/">dashboard</a>>
+        <a href="/products/stock">stock</a>>
+        <a href="/products/editStock">editStock</a>
+    </div <h2 class="text-center mb-5" style="margin-bottom: 45px;">Stock Management</h2>
+
+    <!-- Add Stock Form -->
+    <div class="add-stock-form">
+        <h4>Edit Stock Count</h4>
+
+        <div class="mb-3">
+            <p>product:{{data.name}}</p>
+            <label for="quantity" class="form-label">Quantity</label>
+            <input type="number" class="form-control" id="quantity" name="number" value="{{data.stock}}" required>
+        </div>
+        <button onclick="quantityCheck(event,'{{data._id}}')" type="button" class="btn btn-primary">Edit Stock</button>
+
+
+    </div>
+</div>
+<script>
+
+    function displayMessage(message, messageType) {
+        var messageDiv = document.createElement('div');
+        messageDiv.className = messageType;
+        messageDiv.innerHTML = message;
+        document.body.appendChild(messageDiv);
+        setTimeout(function () {
+            document.body.removeChild(messageDiv);
+        }, 3000);
+    }
+    function quantityCheck(event, id) {
+        const quantity = document.getElementById('quantity').value;
+
+        if (quantity <= 0) {
+            event.preventDefault()
+            displayMessage('new quantity cannot be less than one.', 'error-message');
+            return;
+        }
+        let data = {
+            quantity: quantity
+        }
+        console.log('data:', data)
+        fetch(`/products/editStock/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        }).then(res => {
+            if (res.ok) {
+                return res.text(); // Get the response body as text
+            } else {
+                console.error('Failed with status:', res.status);
+                throw new Error('Stock update failed');
+            }
+        }).then(message => {
+            // Handle the success message as needed
+            const flashMessage = {
+                message: 'Stock edited successfully'
+            };
+            window.location.href = '/products/stock?' + 'flashMessageContent=' + encodeURIComponent(flashMessage.message);
+        }).catch(err => {
+            console.log('Error:', err);
+        });
+    }
+
+</script>

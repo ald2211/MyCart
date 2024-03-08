@@ -1,0 +1,139 @@
+<style>
+  .cart-count {
+    background-color: #23800b;
+    color: white;
+    border-radius: 28%;
+    padding: 0px 6px;
+    font-size: 12px;
+    position: relative;
+    top: 0%;
+    left: -18px;
+    bottom: 21px;
+  }
+
+  .fa-solid,
+  .fas {
+    font-weight: 900;
+    font-size: 30px;
+    margin-right: 20px;
+    color: black;
+  }
+
+  .fa-solid {
+    transition: border-bottom 0.1s ease;
+  }
+
+  .fa-solid:hover {
+    border-bottom: 2px solid #000;
+    /* Change the color and thickness as needed */
+    padding-bottom: 3px;
+    /* Change the color and thickness as needed */
+  }
+
+  .col-md-3 {
+    margin-bottom: 3rem;
+  }
+
+  .card-header {
+    background-color: white;
+    border: none;
+  }
+
+  .card:hover {
+    transform: scale(1.05);
+    /* Adjust the scaling factor as needed */
+    transition: transform 0.3s ease;
+  }
+
+  .fa-regular.fa-heart:hover {
+    color: red;
+  }
+
+  .prImg {
+    height: 300px;
+  }
+
+  .prImg.img {
+    width: 100%;
+    height: 100%;
+  }
+
+  @media (min-width: 768px) and (max-width: 991px) {
+    .prImg {
+      height: 200px;
+    }
+
+    .prImg.img {
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  @media (min-width: 200px) and (max-width: 767px) {
+    .prImg {
+      height: auto;
+    }
+
+    .prImg.img {
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  @media (max-width: 574px) {
+    #logout {
+      border-radius: 0px 30px 30px 0px;
+      margin-left: auto !important;
+      margin-top: -38px !important;
+    }
+  }
+</style>
+</head>
+
+<body>
+  <section>
+    <div class="container" style="display: flex;justify-content: space-between;">
+      <div class="dropdown">
+        <button class="btn btn-warning dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown"
+          aria-haspopup="true" aria-expanded="false" style="width: 158px;">
+          Categories
+        </button>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+          {{#each categories}}
+          <button class="dropdown-item btn btn-outline-dark" type="button">{{this.name}}</button>
+          {{/each}}
+        </div>
+      </div>
+      <i class="fa-solid fa-sliders"></i>
+    </div>
+  </section>
+
+  <div class="container mt-5">
+    <div class="row">
+      {{#if product}}
+      {{#each product}}
+      <div class="col-md-3 mb-4">
+        <div class="card pb-5">
+          <div class="card-header text-right">
+            <i class="fa-regular fa-heart" style="font-size: 24px;"></i>
+          </div>
+          <a href="/zoom/{{_id}}">
+            <div class="prImg"><img src="/croppedImages/{{this.images.[0]}}" class="card-img-top mx-auto d-block"
+                alt="Card Image" style="max-width: 200px; height: auto;"></div>
+          </a>
+        </div>
+        <div class="card-body text-center">
+          <h5 class="card-title">{{this.name}}</h5>
+          <p class="card-text">Price:rs{{this.price}}<span
+              style="text-decoration: line-through; margin-left: 15px;">rs44</span></p>
+        </div>
+      </div>
+      {{/each}}
+
+    </div>
+    {{else}}
+    <h2 style="background: red; color: white; margin-top:21px; text-align:center">No results found</h2>
+    {{/if}}
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

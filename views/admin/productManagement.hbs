@@ -1,0 +1,348 @@
+<style>
+  .custom-alert {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    z-index: 1000;
+    border-radius: 10px;
+  }
+
+  .custom-alert img {
+    max-width: 100px;
+    margin-right: 10px;
+  }
+  
+
+  .delete-btn {
+    cursor: pointer;
+    color: #fff;
+    text-decoration: none;
+    background-color: #dc3545;
+    border: 1px solid #dc3545;
+    border-radius: 5px;
+    padding: 5px 10px;
+    margin-right: 10px;
+  }
+
+  .close-btn {
+    cursor: pointer;
+    color: #fff;
+    text-decoration: none;
+    background-color: #007bff;
+    border: 1px solid #007bff;
+    border-radius: 5px;
+    padding: 5px 10px;
+  }
+
+  .previewImage:hover {
+    transform: scale(1.2);
+  }
+
+  .navbar {
+    background-color: #007bff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  .nav-link {
+    color: #fff;
+  }
+
+  .table {
+    border: 1px solid #dee2e6;
+  }
+
+  .table th,
+  .table td {
+    border: 1px solid #dee2e6;
+  }
+
+  .table-striped tbody tr:nth-of-type(odd) {
+    background-color: #f8f9fa;
+  }
+
+  .badge-pill {
+    padding-right: 1.6em;
+    padding-left: 1.6em;
+    padding-top: 0.6rem;
+    padding-bottom: 0.6rem;
+    border-radius: 10rem;
+  }
+
+  .responsive-message {
+    display: none;
+  }
+
+  .form-control:focus {
+    border: solid 1px black !important;
+    box-shadow: none;
+  }
+
+  .btn:focus {
+    box-shadow: none;
+  }
+
+  @media (max-width: 991px) {
+    .nav-link {
+      text-align: center;
+    }
+
+    .nav-link:hover {
+      border-bottom: solid 1px black;
+    }
+
+    .navbar-collapse {
+      margin-bottom: 205px;
+    }
+
+    .lout {
+      width: 100%;
+    }
+  }
+
+  @media (max-width: 767px) {
+
+    /* Hide certain fields on devices with width less than 767px */
+    .table th:nth-child(4),
+    .table td:nth-child(4),
+    .table th:nth-child(5),
+    .table td:nth-child(5),
+    .table th:nth-child(6),
+    .table td:nth-child(6) {
+      display: none;
+
+    }
+
+    .responsive-message {
+      display: block;
+      color: red;
+    }
+  }
+</style>
+
+<section>
+  <div class="container mt-4">
+    <p class="responsive-message">!! Please use a device with a width greater than 780px to get all details</p>
+    <h2>Product Management</h2>
+    {{#if message}}
+    {{#if message.type}}
+    <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+      <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="close"></button>
+      <strong>Success:</strong> {{message.message}}
+    </div>
+    {{else}}
+    <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+      <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="close"></button>
+      <strong>Failed:</strong>
+      {{message.message}}
+    </div>
+    {{/if}}
+    {{/if}}
+
+
+    <div class="head" style="display: flex;justify-content: space-between;align-items: center;">
+      <h2 style="margin-top: 31px;font-weight: 400;">Product list</h2>
+      <a href="/products/addProduct"><button class="btn btn-outline-dark" style="margin-top: 36px;">Add
+          product</button></a>
+    </div>
+    <div class="container mt-5">
+      <!-- Search Bar -->
+      <form action="/products/search" method="post">
+        <div class="input-group mb-3">
+          <input type="text" class="form-control" placeholder="Search for products..." aria-label="Search" name="search"
+            aria-describedby="searchButton">
+          <div class="input-group-append">
+            <button class="btn btn-outline-secondary" type="submit" id="searchButton">Search</button>
+          </div>
+        </div>
+      </form>
+      <!-- Category List -->
+      <!-- Product Table -->
+
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Stock</th>
+            <th>publisher</th>
+            <th>Category</th>
+            <th>Image</th>
+            <th>Author</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Example product row, replace with data from your backend -->
+          {{#if data.length}}
+          {{#each data}}
+          <tr>
+            <td>{{this.formattedDate}}</td>
+            <td>{{this._doc.name}}</td>
+            <td>₹{{this._doc.price}}.00</td>
+            <td>
+              <p style="text-align: center;">{{this._doc.stock}}</p>
+            </td>
+            <td>{{this._doc.publisher}}</td>
+            <td>{{this._doc.category}}</td>
+            {{#if this._doc.images.length}}
+
+            <td>
+              {{#each this._doc.images}}
+              <img class="previewImage" src="/croppedImages/{{this}}" alt="Product 1"
+                style="max-width: 50px; margin:10px 0" onclick="showCustomAlert('{{this}}')">
+              {{/each}}
+            </td>
+
+            {{else}}
+            <td>No image available</td>
+            {{/if}}
+            <td>{{this._doc.author}}</td>
+            <td>
+              <a href="/products/editProduct/{{this._doc._id}}"><button style="width: 58px;margin: 6px 0;"
+                  class="btn btn-info btn-sm" data-toggle="modal" data-target="#editProductModal">Edit</button></a>
+              {{#if this._doc.softDelete}}
+              <form action="/products/unBlockProduct/{{this._doc._id}}" method="post">
+                <button class="btn btn-primary btn-sm" type="submit" style="width: 58px;">list</button>
+              </form>
+              {{else}}
+              <form id="deleteForm" method="post">
+                <button class="btn btn-danger btn-sm" type="button" onclick="showDeleteModal('{{this._doc._id}}')"
+                  style="width: 60px;">Unlist</button>
+              </form>
+              {{/if}}
+            </td>
+          </tr>
+          {{/each}}
+
+          <!-- Bootstrap Modal -->
+          <div class="modal" tabindex="-1" role="dialog" id="deleteModal">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Confirmation</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true" onclick="hideModal()">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <p>Are you sure you want to Unlist this proudct?</p>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                    onclick="hideModal()">Cancel</button>
+                  <button type="button" class="btn btn-danger" onclick="unlistProduct()">Unlist</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </tbody>
+      </table>
+      {{else}}
+      <h2 style="text-align:center;">no Products to show</h2>
+      {{/if}}
+      <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center align-items-center">
+          <li class="page-item">
+            <a class="page-link" href="#" aria-label="Previous">
+              <span aria-hidden="true">&laquo;</span>
+              <span class="sr-only">Previous</span>
+            </a>
+          </li>
+          {{#each pgn }}
+          <li class="page-item"><a class="page-link" href="/products?page={{this}}">{{this}}</a></li>
+          {{/each}}
+
+          <li class="page-item">
+            <a class="page-link" href="#" aria-label="Next">
+              <span aria-hidden="true">&raquo;</span>
+              <span class="sr-only">Next</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+      <div id="customAlert" class="custom-alert">
+        <div id="imagePreview"></div>
+        <button id="deleteBtn" class="btn btn-danger delete-btn" onclick="deleteImage()">Delete Image</button>
+        <button class="btn btn-info primary-btn" onclick="cropImage()">crop</button>
+        <button class="btn btn-info close-btn" onclick="hideCustomAlert()">Close</button>
+      </div>
+</section>
+<script>
+  let selectedImageUrl;
+  function showCustomAlert(imageUrl) {
+    // Display the custom alert box
+    document.getElementById('customAlert').style.display = 'block';
+
+    // Display the selected image in the alert box
+    var imagePreview = document.getElementById('imagePreview');
+    imagePreview.innerHTML = `<img src="/croppedImages/${imageUrl}" alt="Product">`;
+
+    // Store the selected image URL in a global variable for later use
+    selectedImageUrl = imageUrl;
+  }
+
+  function deleteImage() {
+    fetch('/products/deleteImage', {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ url: selectedImageUrl })
+    }).then(res => {
+      if (res.ok) {
+
+        window.location.href = '/products'
+      }
+    }).catch(err => {
+      console.log('error:', err)
+    })
+
+  }
+  //crop image
+  function cropImage() {
+    location.href = `/products/cropImage/${selectedImageUrl}`
+  }
+
+  function hideCustomAlert() {
+    // Hide the custom alert box
+    document.getElementById('customAlert').style.display = 'none';
+  }
+  // Function to check screen size and show alert
+  function checkScreenSize() {
+    if (window.innerWidth <= 521) {
+      alert("!!--turn off portrait orientation and tilt your phone for better experience");
+    }
+  }
+  // Check screen size initially and add a listener for resize events
+  checkScreenSize();
+  window.addEventListener('resize', checkScreenSize);
+
+  //confirmation while unlisting
+  var currentProductId;
+  function showDeleteModal(id) {
+    currentProductId = id;
+    $('#deleteModal').modal('show');
+  }
+
+  function unlistProduct() {
+    // Set the form action dynamically based on the current category ID
+    var form = document.getElementById('deleteForm');
+    form.action = "/products/deleteProduct/" + currentProductId;
+
+    // Optional: You can add additional logic here before form submission
+
+    // Submit the form
+    form.submit();
+  }
+  function hideModal() {
+    $('#deleteModal').modal('hide');
+  }
+</script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

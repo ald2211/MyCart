@@ -1,0 +1,187 @@
+<title>Payment </title>
+<style>
+    body {
+        background-color: #f8f9fa;
+    }
+
+    .container {
+        margin-top: 50px;
+    }
+
+    h2 {
+        margin-bottom: 30px;
+    }
+
+    .btn-add {
+        margin-top: 20px;
+    }
+
+    .banner-img {
+        max-width: 100px;
+        max-height: 100px;
+    }
+
+    footer {
+        position: absolute;
+        width: 100%;
+        bottom: 0;
+    }
+</style>
+
+
+<div class="container mt-5">
+    {{#if flashMessage}}
+    <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+        <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="close"></button>
+        <strong>Success:</strong> {{flashMessage}}
+    </div>
+    {{/if}}
+    <div class="row">
+        <!-- Current Fixed Charge Box -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    Set Referral bonus for new User
+                </div>
+                <div class="card-body">
+                    <p class="card-text">current Bonus: ₹ {{referral.newUserBonus}}.00</p>
+                    <button class="btn btn-primary" data-toggle="modal"
+                        data-target="#editFixedChargeModal">Edit</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Minimum Range Box -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    Set Referral bonus for Referred User
+                </div>
+                <div class="card-body">
+                    <p class="card-text">current Bonus:₹ {{referral.referredUserBonus}}.00</p>
+                    <button class="btn btn-primary" data-toggle="modal" data-target="#editRangeModal">Edit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Fixed Charge Modal -->
+<div class="modal fade" id="editFixedChargeModal" tabindex="-1" role="dialog"
+    aria-labelledby="editFixedChargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editFixedChargeModalLabel">Edit NewUserBonus</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Add form elements for editing fixed charge here -->
+                <p>Current Bonus: ₹ {{referral.newUserBonus}}.00</p>
+                <label for="newFixedCharge">New Bonus:</label>
+                <input type="text" class="form-control" id="newFixedCharge"
+                    oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Range Modal -->
+<div class="modal fade" id="editRangeModal" tabindex="-1" role="dialog" aria-labelledby="editRangeModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editRangeModalLabel">Edit Referred User Bonus</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Add form elements for editing minimum range here -->
+                <p>Current Bonus:₹ {{referral.referredUserBonus}}.00 </p>
+                <label for="newRange">New Bonus:</label>
+                <input type="text" class="form-control" id="newRange"
+                    oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+
+    // Function to handle the submit action for editing fixed charge
+    $('#editFixedChargeModal .btn-primary').click(function () {
+        // Getting the new fixed charge value from the input
+        var newUserBonus = $('#newFixedCharge').val();
+        if (newUserBonus == '') {
+            event.preventDefault()
+            alert('empty input filed')
+            return;
+        }
+
+        // Performing a fetch request to submit the data
+        fetch('/admin/editNewUserBonus', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ newUserBonus: newUserBonus }),
+        })
+            .then(res => res.json())
+            .then(data => {
+
+                // Updating the card text with the new fixed charge
+                const flashMessage = {
+
+                    message: ' changes updated successfully'
+                };
+                location.href = '/admin/referal?' + 'flashMessageContent=' + encodeURIComponent(flashMessage.message)
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+    });
+
+    // Function to handle the submit action for editing price range
+    $('#editRangeModal .btn-primary').click(function () {
+        // Getting the new price range value from the input
+        var referredUserBonus = $('#newRange').val();
+        if (referredUserBonus == '') {
+            event.preventDefault()
+            alert('empty input field')
+            return;
+        }
+        // Performing a fetch request to submit the data
+        fetch('/admin/editReferredUserBonus', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ referredUserBonus: referredUserBonus }),
+        })
+            .then(res => res.json())
+            .then(data => {
+
+                // Update the card text with the new price range
+                const flashMessage = {
+
+                    message: 'changes updated successfully'
+                };
+                location.href = '/admin/referal?' + 'flashMessageContent=' + encodeURIComponent(flashMessage.message)
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+    });
+</script>

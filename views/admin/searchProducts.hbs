@@ -1,0 +1,187 @@
+<style>
+    .nav-link {
+        transition: border-bottom 0.1s ease;
+    }
+
+    .nav-link:focus {
+        border-bottom: 2px solid #000;
+        /* Change the color and thickness as needed */
+        padding-bottom: 3px;
+        /* Change the color and thickness as needed */
+    }
+
+    .badge-pill {
+        padding-right: 1.6em;
+        padding-left: 1.6em;
+        padding-top: 0.6rem;
+        padding-bottom: 0.6rem;
+        border-radius: 10rem;
+    }
+
+    .responsive-message {
+        display: none;
+    }
+
+    .form-control:focus {
+        border: solid 1px black !important;
+        box-shadow: none;
+    }
+
+    .btn:focus {
+        box-shadow: none;
+    }
+
+    @media (max-width: 991px) {
+        .nav-link {
+            text-align: center;
+        }
+
+        .navbar-collapse {
+            margin-bottom: 205px;
+        }
+
+        .lout {
+            width: 100%;
+        }
+    }
+
+    @media (max-width: 767px) {
+
+        /* Hide certain fields on devices with width less than 767px */
+        .table th:nth-child(4),
+        .table td:nth-child(4),
+        .table th:nth-child(5),
+        .table td:nth-child(5),
+        .table th:nth-child(6),
+        .table td:nth-child(6) {
+            display: none;
+
+        }
+
+        .responsive-message {
+            display: block;
+        }
+    }
+</style>
+
+<section>
+    <div class="container mt-4">
+        <p class="responsive-message">!! Please use a device with a width greater than 780px to get all details</p>
+        <h2>Product Management</h2>
+        {{#if message}}
+        {{#if message.type}}
+        <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+            <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="close"></button>
+            <strong>Success:</strong> {{message.message}}
+        </div>
+        {{else}}
+        <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+            <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="close"></button>
+            <strong>Failed:</strong>
+            {{message.message}}
+        </div>
+        {{/if}}
+        {{/if}}
+
+
+        <div class="head" style="display: flex;justify-content: space-between;align-items: center;">
+            <h2 style="margin-top: 31px;font-weight: 400;">Product list</h2>
+            <a href="/products/addProduct"><button class="btn btn-outline-dark" style="margin-top: 36px;">Add
+                    product</button></a>
+        </div>
+        <div class="container mt-5">
+            <!-- Search Bar -->
+            <form action="/products/search" method="post">
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" placeholder="Search for products..." aria-label="Search"
+                        name="search" aria-describedby="searchButton">
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary" type="submit" id="searchButton">Search</button>
+                    </div>
+                </div>
+            </form>
+            <!-- Category List -->
+            <!-- Product Table -->
+
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Name</th>
+                        <th>Price</th>
+                        <th>Stock</th>
+                        <th>publisher</th>
+                        <th>Category</th>
+                        <th>Image</th>
+                        <th>Author</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Example product row, replace with data from your backend -->
+                    {{#if data.length}}
+                    {{#each data}}
+                    <tr>
+                        <td>{{this.dateCreated}}</td>
+                        <td>{{this.name}}</td>
+                        <td>₹{{this.price}}.00</td>
+                        <td>
+                            <p style="text-align: center;">{{this.stock}}</p>
+                        </td>
+                        <td>{{this.publishedDate}}</td>
+                        <td>{{this.category}}</td>
+                        {{#if this.images.length}}
+                        <td><img src="/uploads/{{this.images.[0]}}" alt="Product 1" style="max-width: 50px;"></td>
+                        {{else}}
+                        <td>No image available</td>
+                        {{/if}}
+                        <td>{{this.author}}</td>
+                        <td>
+                            <a href="/products/editProduct/{{this._id}}"><button style="width: 58px;margin: 6px 0;"
+                                    class="btn btn-info btn-sm" data-toggle="modal"
+                                    data-target="#editProductModal">Edit</button></a>
+                            <form action="/products/deleteProduct/{{this._id}}" method="post"><button
+                                    class="btn btn-danger btn-sm" type="submit">Delete</button></form>
+                        </td>
+                    </tr>
+                    {{/each}}
+
+                    <!-- Add more rows for each product -->
+                </tbody>
+            </table>
+            {{else}}
+            <h2 style="text-align:center;">sorry no matched products </h2>
+            {{/if}}
+</section>
+<nav aria-label="Page navigation example">
+    <ul class="pagination justify-content-center align-items-center">
+        <li class="page-item">
+            <a class="page-link" href="#" aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+                <span class="sr-only">Previous</span>
+            </a>
+        </li>
+        {{#each pgn }}
+        <li class="page-item"><a class="page-link" href="/products/search?page={{this}}">{{this}}</a></li>
+        {{/each}}
+
+        <li class="page-item">
+            <a class="page-link" href="#" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+                <span class="sr-only">Next</span>
+            </a>
+        </li>
+    </ul>
+</nav>
+<script>
+    // Function to check screen size and show alert
+    function checkScreenSize() {
+        if (window.innerWidth <= 521) {
+            alert("!!--turn off portrait orientation and tilt your phone for better experience");
+        }
+    }
+    // Check screen size initially and add a listener for resize events
+    checkScreenSize();
+    window.addEventListener('resize', checkScreenSize);
+</script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

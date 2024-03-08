@@ -1,0 +1,32 @@
+<div class="container mt-4">
+    {{#if message}}
+    {{#if message.type}}
+    <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+        <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="close"></button>
+        <strong>Success:</strong> {{message.message}}
+    </div>
+    {{else}}
+    <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+        <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="close"></button>
+        <strong>Failed:</strong>
+        {{message.message}}
+    </div>
+    {{/if}}
+    {{/if}}
+    <h2>Category Management</h2>
+    <!-- Edit Category Form -->
+    <div class="card mt-4">
+        <div class="card-header">
+            Edit Category
+        </div>
+        <div class="card-body">
+            <form action="/categories/edit/{{data._id}}" method="post">
+                <div class="form-group">
+                    <label for="CategoryName">{{data.name}}</label>
+                    <input type="text" class="form-control" id="categoryName" value="{{data.name}}"
+                        placeholder="Enter category name" name="name" required>
+                </div>
+                <button type="submit" class="btn btn-primary">submit</button>
+            </form>
+        </div>
+    </div>

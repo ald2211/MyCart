@@ -1,0 +1,236 @@
+<style>
+    body {
+        background-color: #f8f9fa;
+    }
+
+    .container {
+        background-color: #ffffff;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        border-radius: 10px;
+        margin-top: 20px;
+    }
+
+    h2,
+    h1 {
+        color: #007bff;
+    }
+
+    .breadcrumbs a {
+        text-decoration: none;
+        color: #007bff;
+    }
+
+    .breadcrumbs a:hover {
+        color: black;
+    }
+
+    .fa-solid,
+    .fas {
+        font-weight: 900;
+        font-size: 30px;
+        margin-right: 20px;
+        color: black;
+    }
+
+    .cart-count {
+        background-color: #23800b;
+        color: white;
+        border-radius: 28%;
+        padding: 0px 6px;
+        font-size: 12px;
+        position: relative;
+        top: 0%;
+        left: -18px;
+        bottom: 21px;
+    }
+
+    .fa-solid {
+        transition: border-bottom 0.1s ease;
+    }
+
+    .fa-solid:hover {
+        border-bottom: 2px solid #000;
+        padding-bottom: 3px;
+    }
+
+    .col-md-3 {
+        margin-bottom: 3rem;
+    }
+
+    .card-header {
+        background-color: white;
+        border: none;
+    }
+
+    .card:hover {
+        transform: scale(1.05);
+        transition: transform 0.3s ease;
+    }
+
+    .card-img-top {
+        width: 41%;
+        margin-left: 24%;
+        margin-top: 22px;
+    }
+
+    @media (max-width: 991px) {
+        .navbar-collapse {
+            margin-bottom: 260px;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .searchBtn {
+            position: absolute;
+            left: 70%;
+        }
+
+        .form-control {
+            width: 70%;
+        }
+    }
+</style>
+<section>
+    <div class="container mt-5">
+        {{#if message}}
+        {{#if message.type}}
+        <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+            <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="close"></button>
+            <strong>Success:</strong> {{message.message}}
+        </div>
+        {{else}}
+        <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+            <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="close"></button>
+            <strong>Failed:</strong>
+            {{message.message}}
+        </div>
+        {{/if}}
+        {{/if}}
+        <div class="breadcrumbs">
+            <a href="/">Home</a> >
+            <a href="/profile">Profile</a>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <!-- Sidebar with user details -->
+                <div class="card">
+                    {{#if user.profileImage}}
+                    <img src="/uploads/{{user.profileImage}}" class="card-img-top" style="max-width: 350px;"
+                        alt="User Photo">
+
+                    {{else}}
+                    <img src="/images/dummyImg.png" class="card-img-top" style="max-width: 350px;" alt="User Photo">
+                    {{/if}}
+                    <h1
+                        style="font-size: calc(1.375rem + 3.5vw);text-align: center;margin-right: 23px;font-family: cursive;">
+                        {{user.name}}</h1>
+                    <div class="card-body">
+                        <h5 class="card-title">Your Profile</h5>
+                        <p class="card-text">Username: {{user.name}}</p>
+                        {{#if user.gmail}}
+                        <p class="card-text">Email: {{user.gmail}}</p>
+                        {{else}}
+                        <p class="card-text">Email: {{user.email}}</p>
+                        {{/if}}
+                        {{#if user.gmail}}
+                        {{else}}
+                        <p class="card-text">Phone: {{user.number}}</p>
+                        {{/if}}
+                        <a href="/editProfile/{{user._id}}" class="btn btn-primary">Edit Profile</a>
+                    </div>
+                </div>
+
+                <!-- Navigation links -->
+                <div class="list-group mt-4">
+                    <a href="#" class="list-group-item list-group-item-action">Your Orders</a>
+                    <a href="#address" class="list-group-item list-group-item-action">Saved Addresses</a>
+                    <a href="#notifications" class="list-group-item list-group-item-action">Notifications</a>
+                    {{#if user.gmail}}
+                    {{else}}
+                    <a href="/reset" class="list-group-item list-group-item-action">Reset Password</a>
+                    {{/if}}
+                    <form action="/logout"><button type="submit" class="btn btn-outline-dark mt-3 mb-3">Logout</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="col-md-8">
+                <!-- Main content area -->
+                <h1 class="mb-4">Current orders</h1>
+
+                <!-- Your Orders Section -->
+                <section id="your-orders" class="mb-4">
+                    <div class="container mt-5">
+                        <div class="row">
+                            <div class="col-md-8 offset-md-2">
+
+                                <!-- List of Orders -->
+                                {{#if Order}}
+                                <ul class="list-group">
+
+                                    {{#each Order}}
+                                    <li class="list-group-item mb-2">
+                                        <div class="d-flex justify-content-between">
+                                            <h5 style="font-size: 10px; max-width: 60px;">Order #{{this._doc.orderId}}
+                                            </h5>
+                                            <span style="height: 20px !important;"
+                                                class="badge badge-warning ">{{this._doc.paymentStatus}}</span>
+                                            <p>Total: ₹{{this._doc.total}}.00</p>
+                                        </div>
+                                        <p>Date: {{this.formattedDate}}</p>
+                                    </li>
+
+                                    {{/each}}
+
+                                </ul>
+                                {{else}}
+                                <p style="text-align: center;">no current orders</p>
+                                {{/if}}
+                                <!-- View More Link -->
+                                <div class="text-center mt-3">
+                                    <a href="/orders" class="btn btn-outline-dark">View all orders</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Saved Addresses Section -->
+                <section id="address" class="mb-4">
+                    <h2>Saved Addresses</h2>
+                    <ul class="list-group">
+                        {{#if Address}}
+                        {{#each Address}}
+                        <li class="list-group-item"><strong>{{this.addressName}}:</strong> {{this.Address}},
+                            {{this.city}},{{this.pincode}}, {{this.country}}</li>
+                        {{/each}}
+                        {{else}}
+                        <li>no address added</li>
+                        {{/if}}
+                    </ul>
+                    <div class="text-center mt-3">
+                        <a href="/address" class="btn btn-outline-dark">Manage Address</a>
+                    </div>
+                </section>
+
+                <!-- Notifications Section -->
+
+                <section id="notifications" class="mb-4">
+
+                    <h2>Notifications</h2>
+                    {{#if Notifications}}
+                    {{#each Notifications}}
+                    <div class="alert alert-success" role="alert">
+                        date:{{this.createdAt}}<br>{{this.message}}
+
+                    </div>
+                    {{/each}}
+                    {{else}}
+                    <p>no Notifications</p>
+                    {{/if}}
+                </section>
+
+            </div>
+        </div>
+    </div>

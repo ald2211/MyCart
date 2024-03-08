@@ -1,0 +1,124 @@
+<title>user home</title>
+<style>
+  .nav-link {
+    transition: border-bottom 0.1s ease;
+  }
+
+  .nav-link:focus {
+    border-bottom: 2px solid #000;
+    /* Change the color and thickness as needed */
+    padding-bottom: 3px;
+    /* Change the color and thickness as needed */
+  }
+
+  .form-control:focus {
+    box-shadow: none;
+    border: solid 1px black;
+  }
+
+  .btn:focus {
+    box-shadow: none;
+  }
+
+  footer {
+    position: absolute;
+    width: 100%;
+    border: solid 3px green;
+    bottom: -100px;
+    left: 0;
+  }
+
+  @media (max-width: 574px) {
+    #logout {
+      border-radius: 0px 30px 30px 0px;
+      margin-left: auto !important;
+      margin-top: -38px !important;
+    }
+  }
+
+  @media (max-width: 574px) {
+    .special {
+      align-items: center;
+      flex-direction: column;
+    }
+
+  }
+</style>
+</head>
+
+<body>
+
+
+  <div class="container special" style="display: flex;justify-content: space-between;margin-top: 20px;">
+    <div class="FirstOne"><i class="fa-solid fa-users" style="font-size: 45px;"></i><span
+        style="font-size: 30px;margin-left: 10px;">Users</span></div>
+    <form class="form-inline my-2 my-lg-0" action="/admin/searchUser" method="post">
+      <input class="form-control mr-sm-2" type="search" placeholder="Search" name="searchuser" aria-label="Search"
+        style="border-radius: 30px 0px 0 30px;">
+      <button class="btn btn-dark my-2 my-sm-0" type="submit"
+        style="border-radius: 0px 30px 30px 0px;margin-left: -20px;">Search</button>
+    </form>
+
+  </div>
+  <div class="container mt-5">
+    <table class="table">
+      <thead class="thead-dark">
+        <tr>
+          <th scope="col">UserName</th>
+          <th scope="col">Email</th>
+          <th scope="col">Contact no.</th>
+          <th scope="col">Action</th>
+          <th scope="col">Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#if result}}
+        {{#each result}}
+        <tr>
+          <th scope="row">{{this.name}}</th>
+          <td>{{this.email}}</td>
+          <td>{{this.number}}</td>
+          <td>
+            {{#if this.isBlocked}}
+            <form action="/unBlock/{{this._id}}" method="post">
+              <button class="btn-success" type="submit">Unblock</button>
+            </form>
+            {{else}}
+            <form action="/block/{{this._id}}" method="post">
+              <button class="btn-danger" type="submit">Block</button>
+            </form>
+            {{/if}}
+          </td>
+          <td>{{#if this.isBlocked}}Blocked {{else}}Active{{/if}}</td>
+        </tr>
+        {{/each}}
+
+      </tbody>
+    </table>
+    {{else}}
+    <h2 style="background: red; color: white; margin-top:21px; text-align:center">No results found</h2>
+    {{/if}}
+  </div>
+  <nav aria-label="Page navigation example">
+    <ul class="pagination justify-content-center align-items-center">
+      <li class="page-item">
+        <a class="page-link" href="#" aria-label="Previous">
+          <span aria-hidden="true">&laquo;</span>
+          <span class="sr-only">Previous</span>
+        </a>
+      </li>
+      {{#each pgn }}
+      <li class="page-item"><a class="page-link" href="/admin/searchUserResults?page={{this}}">{{this}}</a></li>
+      {{/each}}
+
+      <li class="page-item">
+        <a class="page-link" href="#" aria-label="Next">
+          <span aria-hidden="true">&raquo;</span>
+          <span class="sr-only">Next</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+  <hr style="height: 1px;background: #1917170d;margin-top: 50px;">
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

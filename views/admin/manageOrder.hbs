@@ -1,0 +1,315 @@
+<!-- Custom CSS -->
+
+<style>
+  .navbar {
+    background-color: #007bff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  .nav-link {
+    color: #fff;
+  }
+
+  body {
+    background-color: #f8f9fa;
+  }
+
+  .container {
+    background-color: #ffffff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    border-radius: 10px;
+  }
+
+  h2 {
+    color: #007bff;
+  }
+
+  .table th,
+  .table td {
+    border: 1px solid #dee2e6;
+  }
+
+  .badge-success {
+    background-color: #28a745;
+  }
+
+  .btn-info,
+  .btn-warning {
+    color: #ffffff;
+  }
+
+  .btn-info {
+    background-color: #007bff;
+  }
+
+  .btn-warning {
+    background-color: #ffc107;
+  }
+
+  .modal-content {
+    border-radius: 10px;
+  }
+
+  .modal-header {
+    background-color: #007bff;
+    color: #ffffff;
+  }
+
+  .order-history-table {
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+
+  .order-history-table th,
+  .order-history-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+
+  .order-history-table th {
+    background-color: #f5ececdf;
+  }
+
+  .order-history-table tr:hover {
+    background-color: #f5f5f5;
+  }
+
+  .pendingstate {
+
+    display: inline-block;
+    padding: 0.3em 0.6em;
+    font-size: 75%;
+    font-weight: bold;
+    line-height: 1;
+    color: #fff;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: 0.25rem;
+    background-color: #ffc107;
+    /* Change this to your desired background color */
+  }
+
+  .completedstate {
+
+    display: inline-block;
+    padding: 0.3em 0.6em;
+    font-size: 75%;
+    font-weight: bold;
+    line-height: 1;
+    color: #fff;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: 0.25rem;
+    background-color: #01a909;
+    /* Change this to your desired background color */
+  }
+
+  .razorpaypendingpayment {
+    display: none;
+  }
+</style>
+</head>
+
+<body>
+  <div class="container mt-5">
+    <h2 class="mb-4">Order Management</h2>
+
+    <!-- Order Listing Table -->
+    <h4 style="color: rgb(0, 174, 255);">Pending Orders</h4>
+    <table class="table table-bordered">
+      <thead class="thead-light">
+
+        <tr>
+          <th>si no.</th>
+          <th>Customer Name</th>
+          <th>Ordered Date</th>
+          <th>payment method</th>
+          <th>payment Status</th>
+          <th>Order Status</th>
+          <th>Order Details</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#if order}}
+        {{#each order}}
+        <tr>
+          <td><span id="index">{{ this.index}}</span></td>
+          <td>{{this._doc.user.name}}</td>
+          <td>{{this.formattedDate}}</td>
+          <td>{{this._doc.paymentMethod}}</td>
+          <td>
+            <p class="{{this._doc.orderPaymentStatus}}state">{{this._doc.orderPaymentStatus}}</p>
+          </td>
+          <td>
+            <p class="badge badge-warning change">{{this._doc.paymentStatus}}</p>
+          </td>
+          <td><a href="/orders/orderdetails/{{this._doc.orderId}}" class="btn btn-outline-dark"> view More</a></td>
+          <td>
+            <button type="button"
+              class="btn btn-outline-dark btn-sm dropdown-toggle {{this._doc.paymentMethod}}{{this._doc.orderPaymentStatus}}payment"
+              data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Update Status
+            </button>
+            <div class="dropdown-menu">
+              {{#if this._doc.returnStatus}}
+              <button class="dropdown-item additional-action"
+                onclick="updateStatus('{{this._doc._id}}', 'accept',event,'{{this._doc.user._id}}')">Accept</button>
+              <button class="dropdown-item additional-action"
+                onclick="updateStatus('{{this._doc._id}}', 'cancel',event,'{{this._doc.user._id}}')">reject</button>
+              {{else}}
+              <button class="dropdown-item"
+                onclick="updateStatus('{{this._doc._id}}', 'cancelled',event,'{{this._doc.user._id}}')">Cancel</button>
+              <button class="dropdown-item"
+                onclick="updateStatus('{{this._doc._id}}', 'pending',event,'{{this._doc.user._id}}')">Pending</button>
+              <button class="dropdown-item"
+                onclick="updateStatus('{{this._doc._id}}', 'delivered',event,'{{this._doc.user._id}}')">delivered</button>
+              {{/if}}
+            </div>
+          </td>
+        </tr>
+        {{/each}}
+
+        <!-- Add more rows as needed -->
+      </tbody>
+    </table>
+
+    <!-- Order Details Modal -->
+    {{else}}
+    <p style="text-align: center;">no pending orders</p>
+    {{/if}}
+    <nav aria-label="Page navigation example">
+      <ul class="pagination justify-content-center align-items-center">
+        <li class="page-item">
+          <a class="page-link" href="#" aria-label="Previous">
+            <span aria-hidden="true">&laquo;</span>
+            <span class="sr-only">Previous</span>
+          </a>
+        </li>
+        {{#each pgn }}
+        <li class="page-item"><a class="page-link" href="/orders/manageOrder?page={{this}}">{{this}}</a></li>
+        {{/each}}
+
+        <li class="page-item">
+          <a class="page-link" href="#" aria-label="Next">
+            <span aria-hidden="true">&raquo;</span>
+            <span class="sr-only">Next</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- Order History Table (Hidden by default) -->
+    <table class="table mt-4 order-history-table">
+      <h4 style="color: rgb(0, 174, 255);">Cancelled and Delivered Orders</h4>
+      <!-- Add table headers and rows here -->
+      <thead>
+        <tr>
+          <th>si no.</th>
+          <th>Order ID</th>
+          <th>payment method</th>
+          <th>OrderedDate</th>
+          <th>Cancelled/returnRequestedDate</th>
+          <th>Return reason</th>
+          <th>Order status</th>
+          <th>Order Details</th>
+
+          <!-- Add more columns as needed -->
+        </tr>
+      </thead>
+      <tbody>
+        {{#each all}}
+        <tr>
+          <th>{{this.index}}</th>
+          <th>#{{this.orderId}}</th>
+          <th>{{this.paymentMethod}}</th>
+          <th>{{this.formattedDate}}</th>
+          <th>{{this.cancelledDate}}</th>
+          <th><span style="width: 200px;">{{this.returnReason}}</span></th>
+          <th>{{this.paymentStatus}}</th>
+          <th><a href="/orders/orderdetails/{{this.orderId}}" class="btn btn-outline-dark"> view More</a></th>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+    <nav aria-label="Page navigation example">
+      <ul class="pagination justify-content-center align-items-center">
+        <li class="page-item">
+          <a class="page-link" href="#" aria-label="Previous">
+            <span aria-hidden="true">&laquo;</span>
+            <span class="sr-only">Previous</span>
+          </a>
+        </li>
+        {{#each hpgn }}
+        <li class="page-item"><a class="page-link" href="/orders/manageOrder?page={{this}}">{{this}}</a></li>
+        {{/each}}
+
+        <li class="page-item">
+          <a class="page-link" href="#" aria-label="Next">
+            <span aria-hidden="true">&raquo;</span>
+            <span class="sr-only">Next</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+
+  <script>
+    let serialNumber = 1;
+
+    // Function to increment the serial number
+    function getNextSerialNumber() {
+      serialNumber++;
+      document.getElementById('index').innerHTML = serialNumber
+    }
+    document.addEventListener("DOMContentLoaded", function () {
+      const elements = document.querySelectorAll(".change");
+      const dropdown = document.getElementById('statusDropdown');
+      elements.forEach(element => {
+        // Remove existing classes
+        element.classList.remove("badge-warning", "badge-success", "badge-danger");
+
+        // Add the appropriate class based on paymentStatus
+        if (element.innerText === 'returnRequest') {
+
+          element.classList.add("badge-info");
+
+        } else if (element.innerText === 'pending') {
+
+          element.classList.add("badge-warning");
+        } else if (element.innerText === 'cancelled') {
+
+          element.classList.add("badge-danger");
+        }
+      });
+    });
+    function updateStatus(orderId, newStatus, event, Userdetails) {
+      event.stopPropagation()
+      // Make an AJAX request to update the status
+      fetch('/orders/updateOrderStatus', {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          orderId: orderId,
+          newStatus: newStatus,
+          Userdetails: Userdetails
+        }),
+      })
+        .then(res => {
+          if (res.ok) {
+
+            window.location.href = '/orders/manageOrder';
+
+          }
+        })
+        .catch(error => {
+          console.error('Error updating status:', error);
+        });
+    }
+  </script>

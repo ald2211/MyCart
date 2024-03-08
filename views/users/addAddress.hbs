@@ -1,0 +1,109 @@
+<style>
+    body,
+    html {
+        height: 100%;
+        margin: 0;
+        overflow: hidden;
+    }
+
+    .container-full-height {
+        margin-top: 30px;
+        height: 90vh;
+        overflow-y: auto;
+    }
+
+    .address-form {
+        padding: 20px;
+        background-color: #f8f9fa;
+        /* Amazon Ekart background color */
+        border: 1px solid #dfe2e5;
+        /* Amazon Ekart border color */
+        border-radius: 5px;
+        margin: 25px 0;
+
+    }
+
+    .breadcrumbs {
+        margin: 20px 0;
+        font-size: 16px;
+    }
+
+    .breadcrumbs a {
+        text-decoration: none;
+        color: #007bff;
+    }
+
+    .breadcrumbs a:hover {
+        color: black;
+    }
+</style>
+
+<body>
+
+    <div class="container-fluid container-full-height">
+        <div class="breadcrumbs">
+            <a href="/home">Home</a> >
+            <a href="/profile">Profile</a> >
+            <a href="/address">Manage Address</a>>
+            <a href="/addAddress">add Address</a>
+        </div>
+        <div class="row">
+            <div class="col-md-6 offset-md-3">
+                <h1 class="mb-4">Add Address</h1>
+
+                <!-- Address Form -->
+                <form class="address-form" action="/submitAddress" method="post">
+                    <div class="form-row">
+                        <div class="col-md-6 mb-3">
+                            <label for="fullName">Address Name</label>
+                            <input type="text" class="form-control" id="fullName" placeholder="Address name"
+                                name="Addressname" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="fullName">Full Name</label>
+                            <input type="text" class="form-control" id="fullName" placeholder="name" name="name"
+                                required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="phoneNumber">Phone Number</label>
+                            <input type="tel" class="form-control" id="phoneNumber" placeholder="number" name="number"
+                                required>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="address">Address</label>
+                        <textarea class="form-control" id="address" rows="3" placeholder="address" name="address"
+                            required></textarea>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="col-md-6 mb-3">
+                            <label for="city">City</label>
+                            <input type="text" class="form-control" id="city" placeholder="City" name="city" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="pincode">Pincode</label>
+                            <input type="text" class="form-control" id="pincode" placeholder="pincode" name="pincode"
+                                required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="col-md-6 mb-3">
+                            <label for="country">State</label>
+                            <input type="text" class="form-control" id="state" placeholder="state" name="state"
+                                required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="country">Country</label>
+                            <input type="text" class="form-control" id="country" placeholder="Country" name="country"
+                                required>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Add Address</button>
+                </form>
+            </div>
+        </div>
+    </div>

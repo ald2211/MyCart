@@ -1,0 +1,97 @@
+<div class="container mt-5">
+  {{#if message}}
+  {{#if message.type}}
+  <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+    <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="close"></button>
+    <strong>Success:</strong> {{message.message}}
+  </div>
+  {{else}}
+  <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+    <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="close"></button>
+    <strong>Failed:</strong>
+    {{message.message}}
+  </div>
+  {{/if}}
+  {{/if}}
+  <h2 class="mb-4">Coupon Management</h2>
+
+  <!-- edit Coupon Form -->
+  <form id="addCouponForm" style="margin-bottom: 30px;">
+    <p>editCoupen</p>
+    <div class="mb-3">
+      <label for="discount" class="form-label">Discount (%)</label>
+      <input type="number" class="form-control" value="{{coupen.[0].discount}}"
+        oninput="this.value = this.value.replace(/[^0-9]/g, '')" id="discount" required>
+    </div>
+    <div class="mb-3">
+      <label for="discount" class="form-label">Price range</label>
+      <input type="number" class="form-control" value="{{coupen.[0].range}}"
+        oninput="this.value = this.value.replace(/[^0-9]/g, '')" id="range" required>
+    </div>
+    <div class="mb-3">
+      <label for="validFrom" class="form-label">Valid From</label>
+      <input type="date" class="form-control" id="validFrom" value="{{from}}" required readonly>
+    </div>
+    <div class="mb-3">
+      <label for="validTo" class="form-label">Valid To</label>
+      <input type="date" class="form-control" id="validTo" value="{{to}}" required>
+    </div>
+    <button type="click" onclick="editCoupen('{{coupen.[0]._id}}')" class="btn btn-primary">edit Coupon</button>
+  </form>
+</div>
+
+<script>
+  //edit coupen
+  function editCoupen(id) {
+    event.preventDefault();
+    const discount = document.getElementById('discount').value;
+    const range = document.getElementById('range').value;
+    const validFrom = document.getElementById('validFrom').value;
+    const validTo = document.getElementById('validTo').value;
+    if (validFrom >= validTo) {
+
+      alert('expired date entered')
+      return;
+    }
+    if (discount >= 100 || discount == 0) {
+      alert('discount must be greater than 0 and less than 100')
+      return;
+    }
+    if (range <= 0) {
+      alert('range mustbe greater than 0')
+      return;
+    }
+    // Prepare data for the Fetch request
+    const formData = {
+      id: id,
+      discount: discount,
+      range: range,
+      validFrom: validFrom,
+      validTo: validTo
+    };
+
+    // Make the Fetch POST request
+    fetch('/admin/coupen/editCoupen', {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(formData)
+    }).then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          // Redirect to coupen page
+          location.href = '/admin/coupen';
+        } else {
+          // Redirect to coupen edit page
+          window.location.href = `/admin/coupen/editCoupen/${id}`
+        }
+      })
+
+      .catch(err => {
+        console.error('Error:', err);
+        // Redirect to coupen edit page
+        window.location.href = `/admin/coupen/editCoupen/${id}`
+      });
+  }
+</script>

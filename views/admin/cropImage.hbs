@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- Normalize CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+    <!-- Cropper CSS -->
+    <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/cropper/2.3.4/cropper.min.css'>
+    <!-- Cropper JS -->
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/cropperjs/0.8.1/cropper.min.js'></script>
+    <script src="https://unpkg.com/image-compressor/dist/image-compressor.umd.js"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            height: 130vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .page {
+            max-width: 768px;
+            width: 100%;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .box {
+            padding: 1em;
+            width: 100%;
+            margin: 1em;
+            box-sizing: border-box;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .box-2 {
+            padding: 1em;
+            width: calc(50% - 2em);
+            box-sizing: border-box;
+        }
+
+        .options label,
+        .options input {
+            width: 100%;
+            margin-bottom: 0.5em;
+            box-sizing: border-box;
+        }
+
+        .btn {
+            background: #4caf50;
+            color: white;
+            border: none;
+            padding: 0.5em 1em;
+            text-decoration: none;
+            margin: 0.8em 0;
+            display: inline-block;
+            cursor: pointer;
+            box-sizing: border-box;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #45a049;
+        }
+
+        .hide {
+            display: none;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+
+<body>
+    <main class="page">
+        <h2>Crop and Save</h2>
+        <!-- leftbox -->
+        <div class="box-2">
+            <div class="result"></div>
+        </div>
+        <!-- rightbox -->
+        <div class="box-2 img-result hide">
+            <!-- result of crop -->
+            <img class="cropped" src="" alt="">
+        </div>
+        <!-- input file -->
+        <div class="box">
+            <div class="options hide">
+                <label>Width</label>
+                <input type="number" class="img-w" value="300" min="100" max="1200" />
+            </div>
+            <!-- save btn -->
+            <button class="btn save hide">Save</button>
+            <!-- update btn -->
+            <button class="btn update hide">Update</button>
+        </div>
+    </main>
+    <script>
+
+        // vars
+        let result = document.querySelector('.result'),
+            img_result = document.querySelector('.img-result'),
+            img_w = document.querySelector('.img-w'),
+            options = document.querySelector('.options'),
+            save = document.querySelector('.save'),
+            updateBtn = document.querySelector('.update'),  // added reference to update button
+            cropped = document.querySelector('.cropped'),
+            dwn = document.querySelector('.download'),
+            cropper = '';
+
+        // Create an image element for the pre-existing image
+        const img = document.createElement('img');
+        img.id = 'image';
+
+        // Get the image path from the template
+        const imagePath = "/croppedImages/{{ imagePath }}"; // Replace with the correct variable name
+
+        // Set the image source
+        img.src = imagePath;
+
+        // Append the image to the result div
+        result.appendChild(img);
+
+        // Show save btn and options
+        save.classList.remove('hide');
+        options.classList.remove('hide');
+
+        // Init cropper
+        cropper = new Cropper(img);
+
+        // Save on click
+        save.addEventListener('click', function (e) {
+            e.preventDefault();
+            // Get result to data URI
+            let imgSrc = cropper.getCroppedCanvas({
+                width: img_w.value // Input value
+            }).toDataURL();
+            // Remove hide class of img
+            cropped.classList.remove('hide');
+            img_result.classList.remove('hide');
+            // Show image cropped
+            cropped.src = imgSrc;
+            updateBtn.classList.remove('hide');
+            // Assign the value of cropped to a variable outside the event listener
+            window.cropped = cropped;
+        });
+
+
+        // Update on click
+        updateBtn.addEventListener('click', async function (e) {
+            e.preventDefault();
+            // Use the value of cropped here
+            if (window.cropped) {
+                const croppedImage = window.cropped.src;
+                const imageId = "{{imagePath}}";
+
+                try {
+                    // Make a fetch request to update the backend with the cropped image
+                    const response = await fetch('/products/updateImage', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ croppedImage, imageId }),
+                    });
+
+                    if (response.ok) {
+                        const responseData = await response.json();
+                        if (responseData.success == true) {
+                            location.href = '/products'
+                        }
+                        // You can perform additional actions based on the backend response if needed
+                    } else {
+                        console.error('Error updating image on the backend');
+                        // Handle the error as needed
+                    }
+                } catch (error) {
+                    console.error('Fetch error:', error);
+                    // Handle fetch error
+                }
+            }
+        });
+
+
+    </script>
+</body>
+
+</html>

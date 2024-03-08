@@ -1,0 +1,321 @@
+<style>
+    body {
+        background-color: #f8f9fa;
+    }
+
+    .navbar {
+        background-color: #007bff;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+    }
+
+    .nav-link {
+        color: #fff;
+    }
+
+    .container {
+        background-color: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+    }
+
+    h2 {
+        color: #007bff;
+    }
+
+    .add-stock-form {
+        max-width: 500px;
+        margin: 0 auto;
+        background-color: #f2f2f2;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+    }
+
+    .add-stock-form h4 {
+        color: #007bff;
+    }
+
+    footer {
+        background-color: black;
+    }
+
+    .stock-status {
+        background-color: #e9ecef;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+
+    .stock-status h4 {
+        color: #6c757d;
+    }
+
+    .product-list {
+        background-color: #e9ecef;
+        border-radius: 10px;
+        padding: 20px;
+    }
+
+    .product-list h4 {
+        color: #6c757d;
+    }
+
+    .table th,
+    .table td {
+        border: none;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        border: none;
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+
+    .btn-danger {
+        background-color: #dc3545;
+        border: none;
+    }
+
+    .btn-danger:hover {
+        background-color: #c82333;
+    }
+
+    .error-message {
+
+        color: #df071dd6;
+        position: absolute;
+        top: 90px;
+        left: 40%;
+    }
+
+    .breadcrumbs {
+        margin: 20px 0;
+        font-size: 16px;
+    }
+
+    .breadcrumbs a {
+        text-decoration: none;
+        color: #007bff;
+    }
+
+    .breadcrumbs a:hover {
+        color: black;
+    }
+</style>
+
+<div class="container">
+    {{#if flashMessage}}
+    <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+        <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="close"></button>
+        <strong>Success:</strong> {{flashMessage}}
+    </div>
+    {{/if}}
+    {{#if message}}
+    {{#if message.type}}
+    <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+        <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="close"></button>
+        <strong>Success:</strong> {{message.message}}
+    </div>
+    {{else}}
+    <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+        <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="close"></button>
+        <strong>Failed:</strong>
+        {{message.message}}
+    </div>
+    {{/if}}
+    {{/if}}
+    <div class="breadcrumbs">
+        <a href="/admin">dashboard</a>>
+        <a href="/products/stock">stock</a>
+    </div>
+    <h2 class="text-center" style="margin-bottom: 45px;">Stock Management</h2>
+
+    {{!-- <!-- Add Stock Form -->
+    <div class="add-stock-form">
+        <h4>Add Stock Count</h4>
+        <form action="/products/stock" method="post" id="stockForm">
+            <div class="mb-3">
+                <label for="productName" class="form-label">Product Name</label>
+                <input type="text" class="form-control" id="productName" name="name"
+                    onkeydown="return event.key !== ' ' || event.target.selectionStart !== event.target.selectionEnd"
+                    required>
+            </div>
+            <div class="mb-3">
+                <label for="quantity" class="form-label">Quantity</label>
+                <input type="number" class="form-control" id="quantity" name="number" required>
+            </div>
+            <button type="submit" class="btn btn-primary" onclick="quantityCheck(event)"><i class="fas fa-plus"> </i>
+                Add Stock</button>
+        </form>
+    </div> --}}
+
+    <!-- Stock Status -->
+    <div class="stock-status">
+        <h4>Stock Status</h4>
+        <p>Total Active Stock: <span id="totalStock">{{Active}}</span></p>
+        <p>Total outof Stock: <span id="totalStock">{{outofStock}}</span></p>
+    </div>
+
+    <!-- Product List with Stock -->
+
+    <div class="product-list">
+        <h4>Product List</h4>
+        <table class="table">
+            <thead>
+                <tr>
+
+                    <th scope="col">Product Name</th>
+                    <th>Price</th>
+                    <th>Category</th>
+                    <th>Image</th>
+                    <th scope="col">Stock Count</th>
+                    <th>stock status</th>
+                    <th>Action</th>
+
+
+                </tr>
+            </thead>
+            <tbody>
+                {{#if product}}
+                {{#each product}}
+                <tr>
+                    <td>{{this .name}}</td>
+                    <td>{{this.price}}</td>
+                    <td>{{this.category}}</td>
+                    {{#if this.images.length}}
+                    <td><img src="/croppedImages/{{this.images.[0]}}" alt="Product 1" style="max-width: 50px;"></td>
+                    {{else}}
+                    <td>No image available</td>
+                    {{/if}}
+                    <td>
+                        <p style="text-align: center;">{{this.stock}}</p>
+                    </td>
+                    <td>{{this.stockStatus}}</td>
+                    <td>
+                        <a href="/products/editStock/{{this._id}}"><button style="width: 58px;margin: 6px 0;"
+                                class="btn btn-info btn-sm" data-toggle="modal"
+                                data-target="#editProductModal">Edit</button></a>
+                        <button class="btn btn-danger btn-sm" style="width: 58px;" type="button"
+                            onclick="showDeleteModal('{{this._id}}')">Clear</button>
+                    </td>
+
+                </tr>
+                {{/each}}
+
+                <!-- Bootstrap Modal -->
+                <div class="modal" tabindex="-1" role="dialog" id="deleteModal">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Confirmation</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true" onclick="hideModal()">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <p>Are you sure you want to clear the stock?</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                                    onclick="hideModal()">Cancel</button>
+                                <button type="button" class="btn btn-danger" onclick="stockClear()">Clear</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </tbody>
+            {{else}}
+            <p style="text-align: center;">no stocks</p>
+            {{/if}}
+        </table>
+    </div>
+</div>
+<nav aria-label="Page navigation example" style="margin-top: 15px;">
+    <ul class="pagination justify-content-center align-items-center">
+        <li class="page-item">
+            <a class="page-link" href="#" aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+                <span class="sr-only">Previous</span>
+            </a>
+        </li>
+        {{#each pgn }}
+        <li class="page-item"><a class="page-link" href="/products/stock?page={{this}}">{{this}}</a></li>
+        {{/each}}
+
+        <li class="page-item">
+            <a class="page-link" href="#" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+                <span class="sr-only">Next</span>
+            </a>
+        </li>
+    </ul>
+</nav>
+<script>
+
+    function displayMessage(message, messageType) {
+        var messageDiv = document.createElement('div');
+        messageDiv.className = messageType;
+        messageDiv.innerHTML = message;
+        document.body.appendChild(messageDiv);
+        setTimeout(function () {
+            document.body.removeChild(messageDiv);
+        }, 3000);
+    }
+    function quantityCheck(event) {
+        const quantity = document.getElementById('quantity').value;
+
+        if (quantity <= 0) {
+            event.preventDefault()
+            displayMessage('new quantity cannot be less than one.', 'error-message');
+            return;
+        }
+        document.getElementById('stockForm').submit();
+        return;
+    }
+
+    function clearStock(id) {
+        fetch(`/products/clearStock/${id}`,
+            {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(res => {
+                if (res.ok) {
+                    const flashMessage = {
+
+                        message: 'stock cleared successfully'
+                    };
+                    window.location.href = '/products/stock?' + 'flashMessageContent=' + encodeURIComponent(flashMessage.message); // Redirect to the specified location
+                } else {
+                    // Handle other response statuses
+                    console.error('Failed with status:', res.status);
+                }
+            }).catch(err => {
+                console.log('error', err)
+            })
+    }
+
+    //confirmation while unlisting
+    var currentStockId;
+    function showDeleteModal(id) {
+        currentStockId = id;
+        $('#deleteModal').modal('show');
+    }
+
+    function stockClear() {
+        clearStock(currentStockId)
+    }
+    function hideModal() {
+        $('#deleteModal').modal('hide');
+    }
+
+</script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

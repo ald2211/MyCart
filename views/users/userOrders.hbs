@@ -1,0 +1,612 @@
+<!-- Include Razorpay library -->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<style>
+    /* Additional CSS for styling */
+    body {
+        background-color: #f8f9fa;
+    }
+
+    .container {
+        background-color: #ffffff;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        border-radius: 10px;
+        margin-top: 20px;
+    }
+
+    h2,
+    h1 {
+        color: #007bff;
+    }
+
+    .breadcrumbs a {
+        text-decoration: none;
+        color: #007bff;
+    }
+
+    .breadcrumbs a:hover {
+        color: black;
+    }
+
+    .fa-solid,
+    .fas {
+        font-weight: 900;
+        font-size: 30px;
+        margin-right: 20px;
+        color: black;
+    }
+
+    .cart-count {
+        background-color: #23800b;
+        color: white;
+        border-radius: 28%;
+        padding: 0px 6px;
+        font-size: 12px;
+        position: relative;
+        top: 0%;
+        left: -18px;
+        bottom: 21px;
+    }
+
+    .fa-solid {
+        transition: border-bottom 0.1s ease;
+    }
+
+    .fa-solid:hover {
+        border-bottom: 2px solid #000;
+        padding-bottom: 3px;
+    }
+
+    .order-card {
+        margin-bottom: 20px;
+    }
+
+    .row {
+        justify-content: center;
+    }
+
+    .product-card {
+        margin-top: 10px;
+    }
+
+    .buton {
+        width: 78px;
+        font-size: 11px;
+        padding-bottom: 6px;
+    }
+
+    .breadcrumbs {
+        margin: 20px 0;
+        font-size: 16px;
+    }
+
+    .breadcrumbs a {
+        text-decoration: none;
+        color: #007bff;
+    }
+
+    .breadcrumbs a:hover {
+        color: black;
+    }
+
+    .error-message {
+
+        color: #df071dd6;
+        position: absolute;
+        top: 70px;
+        left: 30%;
+    }
+
+    .order-card,
+    .order-history-table {
+        width: 100%;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+    }
+
+    .order-card .card-body,
+    .order-history-table {
+        padding: 20px;
+    }
+
+    .order-card h5 {
+        margin-bottom: 10px;
+    }
+
+    .order-card .product-card {
+        margin-top: 10px;
+    }
+
+    .order-card .product-card .card {
+        margin-bottom: 10px;
+    }
+
+    .order-history-table {
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+
+    .order-history-table th,
+    .order-history-table td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+    }
+
+    .order-history-table th {
+        background-color: #f2f2f2;
+    }
+
+    .order-history-table tr:hover {
+        background-color: #f5f5f5;
+    }
+
+    .returnButtondelivered {
+        display: block;
+    }
+
+    .returnButtoncancelled,
+    .returnButtonrejected,
+    .returnButtonAccepted,
+    .returnButtonreturnRequest {
+        display: none;
+    }
+
+    .invoicepending {
+        display: none;
+    }
+
+    .invoiceCODcancelled {
+        display: none;
+    }
+
+    .paymentcompleted {
+        display: none;
+    }
+
+    .pendingstate {
+
+        display: inline-block;
+        padding: 0.3em 0.6em;
+        font-size: 75%;
+        font-weight: bold;
+        line-height: 1;
+        color: #fff;
+        text-align: center;
+        white-space: nowrap;
+        vertical-align: baseline;
+        border-radius: 0.25rem;
+        background-color: #ffc107;
+        /* Change this to your desired background color */
+    }
+
+    .completedstate {
+
+        display: inline-block;
+        padding: 0.3em 0.6em;
+        font-size: 75%;
+        font-weight: bold;
+        line-height: 1;
+        color: #fff;
+        text-align: center;
+        white-space: nowrap;
+        vertical-align: baseline;
+        border-radius: 0.25rem;
+        background-color: #01a909;
+        /* Change this to your desired background color */
+    }
+
+    .orderPaymentCOD {
+        display: none;
+    }
+</style>
+
+<div class="container mt-5">
+
+    {{#if message}}
+    <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+        <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="close"></button>
+        <strong>Success:</strong> {{message}}
+    </div>
+    {{/if}}
+    {{#if failMessage}}
+    <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+        <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="close"></button>
+        <strong>Failed:</strong> {{failMessage}}
+    </div>
+    {{/if}}
+
+    <div class="breadcrumbs">
+        <a href="/">Home</a> >
+        <a href="/profile">Profile</a> >
+        <a href="/orders">Orders</a>>
+    </div>
+    <h2 class="mb-4" style="text-align: center;">Your Orders</h2>
+
+    <!-- Orders List -->
+    <div class="row">
+        <div class="col-md-8">
+            <!-- Sample Order Card -->
+            {{#if carts}}
+            {{#each carts}}
+            <div class="card order-card">
+                <div class="card-body">
+                    <h5 class="card-title">Order #{{this._doc.orderId}}</h5>
+                    <span>paymentStatus:</span>
+                    <span class="{{this._doc.orderPaymentStatus}}state">{{this._doc.orderPaymentStatus}}</span>
+                    <span style="margin-left:10px;">OrderStatus:</span>
+                    <span id="state" class="badge badge-warning change">{{this._doc.paymentStatus}}</span>
+                    <!-- Product List for the Order -->
+                    <div class="product-card">
+                        <!-- Sample Product Card -->
+                        {{#each this._doc.products}}
+                        <div class="card">
+                            <div class="card-body d-flex justify-content-between">
+                                <div>
+                                    <h6 class="card-subtitle mb-2 text-muted">{{this.product.name}}</h6>
+                                    {{#if this.product.ProductDiscountedPrice}}
+                                    <p class="card-text">
+                                        <span> ₹{{this.product.ProductDiscountedPrice}} </span>
+                                        <span
+                                            style="text-decoration: line-through; margin-left: 6px;">₹{{this.product.price}}</span>
+                                    </p>
+                                    {{else}}
+                                    <p class="card-text">Price: ₹{{this.product.price}}.00</p>
+                                    {{/if}}
+                                    <p class="card-text">Quantity: {{this.quantity}}</p>
+                                </div>
+                                <img src="/croppedImages/{{this.product.images.[0]}}" alt="Product 1 Image" width="90">
+                            </div>
+                        </div>
+                        <!-- Add more product cards as needed -->
+                        {{/each}}
+                    </div>
+                    <p class="card-text mt-2">deliveryCharge: ₹{{this._doc.fixedShipingCharge}}</p>
+                    {{#if this._doc.coupenDiscount}}
+                    <p class="card-text mt-2">Coupen Discount:{{this._doc.coupenDiscount}}%</p>
+                    {{/if}}
+                    <p class="card-text mt-2">Total: ₹{{this._doc.total}}.00</p>
+                    <p class="card-text">Date: {{this.formattedDate}}</p>
+                    <button onclick="cancelOrder('{{this._doc._id}}')" class="btn btn-danger" type="button"
+                        id="cancelbtn">Cancel Order</button>
+                    <button class="btn btn-success invoice{{this._doc.orderPaymentStatus}}" type="button"
+                        onclick="invoice('{{this._doc.orderId}}')">Invoice</button>
+                    <button onclick="continuePayment('{{this._doc.orderId}}')"
+                        class="btn btn-primary payment{{this._doc.orderPaymentStatus}} orderPayment{{{this._doc.paymentMethod}}}">continue
+                        Payment</button>
+                </div>
+            </div>
+            {{/each}}
+            {{else}}
+            <p style="text-align:center;">no pending orders found</p>
+            {{/if}}
+            <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-center align-items-center">
+                    <li class="page-item">
+                        <a class="page-link" href="#" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                            <span class="sr-only">Previous</span>
+                        </a>
+                    </li>
+                    {{#each tpa}}
+                    <li class="page-item"><a class="page-link" href="/orders?page={{this}}">{{this}}</a></li>
+                    {{/each}}
+                    <li class="page-item">
+                        <a class="page-link" href="#" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                            <span class="sr-only">Next</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <!-- Add more order cards as needed -->
+
+            <button class="btn btn-outline-dark mt-3 mb-4" onclick="toggleOrderHistory()">Show Order History</button>
+
+            <!-- Order History Table (Hidden by default) -->
+            <table class="table mt-3 order-history-table">
+                <!-- Add table headers and rows here -->
+                <thead>
+                    <tr>
+                        <th>si no.</th>
+                        <th>Order ID</th>
+                        <th>OrderedDate</th>
+                        <th>cancelledDate</th>
+                        <th>Total</th>
+                        <th>status</th>
+                        <th>Action</th>
+                        <th>More Details</th>
+
+                        <!-- Add more columns as needed -->
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each all}}
+                    <tr>
+                        <th>{{this.index}}</th>
+                        <th>#{{this._doc.orderId}}</th>
+                        <th>{{this.formattedDate}}</th>
+                        <th>{{this.cancelledDate}}</th>
+                        <th>₹{{this._doc.total}}</th>
+                        <th><span class="history">{{this._doc.paymentStatus}}</span></th>
+                        <th>
+                            <button onclick="openReturnModal(event, '{{this._doc._id}}', '{{this._doc.returnStatus}}')"
+                                class="btn btn-info returnButton{{this._doc.paymentStatus}}" type="button">
+                                Return
+                            </button>
+                            <button
+                                class="btn btn-success invoice{{this._doc.paymentMethod}}{{this._doc.paymentStatus}}"
+                                type="button" onclick="invoice('{{this._doc.orderId}}')"
+                                style="margin-top: 5px;">Invoice</button>
+                        </th>
+                        <th><a href="/orders/orderdetails/{{this._doc.orderId}}" class="btn btn-outline-dark"> view
+                                More</a></th>
+                    </tr>
+                    <!-- The modal -->
+                    <div class="modal fade" id="returnModal-{{this._doc._id}}" tabindex="-1" role="dialog"
+                        aria-labelledby="returnModalLabel-{{this._doc._id}}" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="returnModalLabel-{{this._doc._id}}">Reason for Returning
+                                    </h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span onclick="closeReturnModal('{{this._doc._id}}')"
+                                            aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <label for="returnReason">Please enter the reason for returning:</label>
+                                    <input type="text" class="form-control" id="returnReason-{{this._doc._id}}">
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary"
+                                        onclick="closeReturnModal('{{this._doc._id}}')"
+                                        data-dismiss="modal">Close</button>
+                                    <button type="button" class="btn btn-primary"
+                                        onclick="confirmReturn('{{this._doc._id}}')">Continue</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {{/each}}
+
+                </tbody>
+
+            </table>
+
+        </div>
+        <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-center align-items-center">
+                <li class="page-item">
+                    <a class="page-link" href="#" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                        <span class="sr-only">Previous</span>
+                    </a>
+                </li>
+                {{#each tp }}
+                <li class="page-item"><a class="page-link" href="/orders?page={{this}}">{{this}}</a></li>
+                {{/each}}
+
+                <li class="page-item">
+                    <a class="page-link" href="#" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                        <span class="sr-only">Next</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>
+
+<script>
+    //invoice
+    function invoice(order) {
+        // invoice page
+        location.href = `/invoice/${order}`
+
+    }
+
+    function openReturnModal(event, orderId, status) {
+        try {
+            document.getElementById(`returnReason-${orderId}`).value = '';
+            // Show the modal
+            $(`#returnModal-${orderId}`).modal('show');
+        } catch (err) {
+            console.log('error:', err);
+        }
+    }
+
+    function closeReturnModal(orderId) {
+        // Close the modal
+        $(`#returnModal-${orderId}`).modal('hide');
+    }
+
+    function confirmReturn(orderId) {
+        // Get the reason entered by the user
+        const reason = document.getElementById(`returnReason-${orderId}`).value;
+
+        // Check if the user entered a reason
+        if (reason.trim() !== '') {
+            // User entered a reason, you can now proceed with the logic
+            returnOrder(orderId, reason);
+
+            // Close the modal
+            closeReturnModal(orderId);
+        } else {
+            // Inform the user that a reason is required (customize this according to your needs)
+            alert('Please enter a reason for returning.');
+        }
+    }
+
+    function returnOrder(orderId, reason) {
+        fetch('/orders/return',
+            {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ orderId: orderId, reason: reason })
+            }).then(res => {
+                if (res.ok) {
+                    const flashMessage = {
+                        message: 'return request send successfully'
+                    };
+                    window.location.href = '/orders?' + 'flashMessageContent=' + encodeURIComponent(flashMessage.message);
+                }
+            })
+    }
+    function toggleOrderHistory() {
+        // Get the order history table element
+        const orderHistoryTable = document.querySelector('.order-history-table');
+
+        // Toggle the display property
+        orderHistoryTable.style.display = orderHistoryTable.style.display === 'none' ? 'table' : 'none';
+    }
+    function displayMessage(message, messageType) {
+        var messageDiv = document.createElement('div');
+        messageDiv.className = messageType;
+        messageDiv.innerHTML = message;
+        document.body.appendChild(messageDiv);
+        setTimeout(function () {
+            document.body.removeChild(messageDiv);
+        }, 3000);
+    }
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const elements = document.querySelectorAll(".change");
+
+        elements.forEach(element => {
+            // Remove existing classes
+            element.classList.remove("badge-warning", "badge-success", "badge-danger");
+
+            // Add the appropriate class based on paymentStatus
+            if (element.innerText === 'pending') {
+
+                element.classList.add("badge-warning");
+            }
+        });
+    });
+
+    function cancelOrder(id) {
+
+        if (confirm('Are you sure to cancel this order?')) {
+            fetch(`/orders/cancel/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'content-type': 'application/json'
+                },
+            }).then(response => {
+                if (response.ok) {
+
+                    const flashMessage = {
+                        message: 'order cancelled successfully'
+                    };
+                    window.location.href = '/orders?' + 'flashMessageContent=' + encodeURIComponent(flashMessage.message);
+                } else {
+                    console.error('Failed with status:', response.status);
+                }
+            }).catch(error => {
+                console.log('Error:', error);
+            })
+        }
+    };
+    //continue payment
+    function continuePayment(id) {
+        event.preventDefault()
+        fetch('/orders/continueFailedPayment', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ orderId: id })
+        })
+            .then(res => res.json())
+            .then(data => {
+                console.log('data:', data)
+                const orderData = data.raz_order;
+                console.log('orderData:', data.raz_order)
+                const user = data.user
+                razorPayment(orderData, event, user);
+            })
+            .catch(err => {
+                console.log('error:', err)
+            })
+    }
+    function razorPayment(order, event, user) {
+
+        var options = {
+            "key": "rzp_test_Bj7oownxupJuE3", // Enter the Key ID generated from the Dashboard
+            "amount": order.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+            "currency": "INR",
+            "name": "MyCart", //your business name
+            "description": "order in myCart",
+            "image": "http://localhost:3000/images/logo.png",
+            "order_id": order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+            "handler": function (resp) {
+                //returning data to server
+                console.log('handlerResponse:', resp)
+
+                verifyPayment(resp, order)
+            },
+            "prefill": { //We recommend using the prefill parameter to auto-fill customer's contact information, especially their phone number
+                "name": user.name, //your customer's name
+                "email": user.email,
+                "contact": `${user.number}`  //Provide the customer's phone number for better conversion rates 
+            },
+            "notes": {
+                "address": "Razorpay Corporate Office"
+            },
+            "theme": {
+                "color": "#3399cc"
+            }
+        }
+        var rzp1 = new Razorpay(options);
+        rzp1.on('payment.failed', function (resp) {
+            console.log('error:', resp.error.code);
+            console.log('error:', resp.error.description);
+            console.log('error:', resp.error.source);
+            console.log('error:', resp.error.step);
+            console.log('error:', resp.error.reason);
+            console.log('error:', resp.error.metadata.order_id);
+            console.log('error:', resp.error.metadata.payment_id);
+            const failMessage = {
+                message: 'Payment failed',
+                type: false
+            };
+            window.location.href = '/orders?' + 'failMessageContent=' + encodeURIComponent(failMessage.message)
+        });
+        rzp1.open();
+
+    }
+
+    async function verifyPayment(payment, order) {
+        try {
+            fetch('/orders/continuePaymentVerification', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ payment: payment, razorOrder: order })
+            })
+                .then(res => res.json())
+                .then(status => {
+                    if (status.status) {
+                        const flashMessage = {
+                            message: 'order placed successfully',
+
+                        };
+                        window.location.href = '/orders?' + 'flashMessageContent=' + encodeURIComponent(flashMessage.message)
+                    }
+                })
+                .catch(err => {
+                    console.log('error:', err)
+                })
+        } catch (error) {
+            console.error('Error verifying payment:', error);
+        }
+    }
+
+</script>

@@ -1,0 +1,138 @@
+<style>
+    .nav-link {
+        transition: border-bottom 0.1s ease;
+    }
+
+    .nav-link:focus {
+        border-bottom: 2px solid #000;
+        /* Change the color and thickness as needed */
+        padding-bottom: 3px;
+        /* Change the color and thickness as needed */
+    }
+
+    .badge-pill {
+        padding-right: 1.6em;
+        padding-left: 1.6em;
+        padding-top: 0.6rem;
+        padding-bottom: 0.6rem;
+        border-radius: 10rem;
+    }
+
+    .form-control:focus {
+        border: solid 1px black !important;
+        box-shadow: none;
+    }
+
+    .btn:focus {
+        box-shadow: none;
+    }
+
+    footer {
+        position: absolute;
+        width: 100%;
+        bottom: 0;
+    }
+
+    @media (max-width: 991px) {
+        .nav-link {
+            text-align: center;
+        }
+
+        .navbar-collapse {
+            margin-bottom: 205px;
+        }
+
+        .lout {
+            width: 100%;
+        }
+    }
+</style>
+
+<section>
+    <div class="container mt-4">
+        <h2>Category Management</h2>
+        {{#if message}}
+        {{#if message.type}}
+        <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+            <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="close"></button>
+            <strong>Success:</strong> {{message.message}}
+        </div>
+        {{else}}
+        <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+            <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="close"></button>
+            <strong>Failed:</strong>
+            {{message.message}}
+        </div>
+        {{/if}}
+        {{/if}}
+
+        <div class="container mt-5">
+            <!-- Search Bar -->
+            <form action="/categories/search" method="post">
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" placeholder="Search for categories..." aria-label="Search"
+                        aria-describedby="searchButton" name="search">
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary" type="submit" id="searchButton">Search</button>
+                    </div>
+                </div>
+            </form>
+            <!-- Category List -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    Category List
+                </div>
+
+                <div class="card-body">
+                    <ul class="list-group">
+                        {{#if result}}
+                        {{#each result}}
+                        <!-- Example categories (you can dynamically generate these from your backend) -->
+                        <li class="list-group-item" style="padding: 30px;">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span style="width: 100px;">{{this.name}}</span>
+                                <span class="badge badge-primary badge-pill"></span>
+                                {{#if this.status}}
+                                <form action="/categories/unlist/{{this._id}}" method="post"><button
+                                        style="width: 100px;" type="submit" class="btn btn-danger btn-sm"
+                                        onclick="deleteCategory(this)">Unlist</button></form>
+                                {{else}}
+                                <form action="/categories/list/{{this._id}}" method="post"><button style="width: 100px;"
+                                        type="submit" class="btn btn-info btn-sm"
+                                        onclick="deleteCategory(this)">list</button></form>
+                                {{/if}}
+                                <form action="/categories/edit/{{this._id}}" method="get"><button type="submit"
+                                        class="btn btn-primary btn-sm" style="width: 100px;">Edit</button></form>
+                            </div>
+                        </li>
+                        {{/each}}
+                        <!-- Add more categories as needed -->
+                    </ul>
+                </div>
+            </div>
+            {{else}}
+            <h2 style="background: red; color: white; margin-top:21px; text-align:center">No results found</h2>
+            {{/if}}
+        </div>
+</section>
+<nav aria-label="Page navigation example">
+    <ul class="pagination justify-content-center align-items-center">
+        <li class="page-item">
+            <a class="page-link" href="#" aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+                <span class="sr-only">Previous</span>
+            </a>
+        </li>
+        {{#each pgn }}
+        <li class="page-item"><a class="page-link" href="/categories/search?page={{this}}">{{this}}</a></li>
+        {{/each}}
+
+        <li class="page-item">
+            <a class="page-link" href="#" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+                <span class="sr-only">Next</span>
+            </a>
+        </li>
+    </ul>
+</nav>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

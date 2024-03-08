@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice</title>
+    <script src="https://rawgit.com/eKoopmans/html2pdf/master/dist/html2pdf.bundle.js"></script>
+
+</head>
+
+<body>
+    <div class="text-center">
+        <button id="downloadButton" class="btn btn-outline-success" style="margin-top: 15px;">Download Invoice</button>
+    </div>
+    <div id="invoice" class="container">
+        <div id="invoice-header" class="text-center">
+            <img src="http://localhost:3000/images/logowithout.png" alt="MyCart Logo" id="logo"
+                style="margin-bottom:70px;">
+            <h1>INVOICE</h1>
+        </div>
+
+        <div id="company-details" class="text-right">
+            <p><strong>MyCart</strong></p>
+            <p>Industrialpark, Calicut PO, Kakkanchery</p>
+            <p>1234 Ab, Kozhikode</p>
+            <p>India</p>
+        </div>
+
+        <hr>
+
+        <div id="invoice-details" class="flex-container">
+            <div id="user-details" class="width-50">
+                <p><strong>{{order.[0].userName.[0]}}</strong></p>
+                <p>{{order.[0].address}}</p>
+                <p>PIN{{order.[0].pincode}}, {{order.[0].city}}</p>
+                <p>India</p>
+            </div>
+
+            <div class="num width-50">
+                <p><strong>Number:</strong> {{order.[0].number.[0]}}</p>
+                <p><strong>Date:</strong> {{order.[0].date}}</p>
+            </div>
+        </div>
+
+        <table id="invoice-table" class="table">
+            <thead>
+                <tr>
+                    <th>Products</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>Discounted Price</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each order.[0].products}}
+                <tr>
+                    <td>{{this.productName}}</td>
+                    <td>{{this.quantity}}</td>
+                    <td>₹{{this.price}}.00</td>
+                    <td>₹{{this.finalisedPrice}}.00</td>
+                    <td>₹{{this.totalPerProduct}}.00</td>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+
+        <div id="invoice-footer" class="text-right">
+            {{#if order.[0].coupen}}
+            <p><strong>Coupon Discount:</strong> {{order.[0].coupen}}%</p>
+            {{/if}}
+            <p><strong>Delivery Charge:</strong> ₹{{order.[0].deliveryCharge}}.00</p>
+            <hr>
+            <p id="total" class="font-bold"><strong>Total:</strong> ₹{{order.[0].grandTotal}}.00</p>
+        </div>
+
+        <div id="auto-generated" class="text-center" style="margin-bottom: 100px;">
+            <p>Automatically generated Invoice</p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('downloadButton').addEventListener('click', function () {
+            let dbutton = document.getElementById('downloadButton');
+            dbutton.style.visibility = 'hidden';
+
+            // Use html2pdf with specific width and auto height
+            var element = document.getElementById('invoice');
+            var options = {
+                margin: 10,
+                filename: 'invoice.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait', width: 940 }
+            };
+
+            html2pdf(element, options);
+
+            // Restore button visibility after generating PDF
+            dbutton.style.visibility = 'visible';
+        });
+    </script>
+</body>
+
+</html>
