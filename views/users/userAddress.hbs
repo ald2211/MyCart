@@ -97,6 +97,13 @@
   .breadcrumbs a:hover {
     color: black;
   }
+
+  @media (max-width: 992px) {
+
+    .navbar-collapse {
+      margin-bottom: 260px;
+    }
+  }
 </style>
 <div class="container-fluid container-full-height">
   {{#if message}}
@@ -171,3 +178,4 @@
       </li>
     </ul>
   </nav>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

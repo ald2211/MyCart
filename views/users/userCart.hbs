@@ -114,6 +114,14 @@
             text-align: center;
         }
     }
+    @media (min-width: 767px) and (max-width: 992px){
+        .counter{
+            width: 21.666667%
+        }
+        .removebtn{
+            margin-top: 9px;
+        }
+    }
 </style>
 <section>
     <div class="container mt-5">
@@ -151,7 +159,7 @@
                         <p><strong>author:</strong>{{this.product.author}}</p>
                         <p><strong>publisher:</strong>{{this.product.publisher}}</p>
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-md-2 counter">
                         <div class="input-group">
                             <button class="btn btn-outline-secondary"
                                 onclick="decrementQuantity(this,'{{this._id}}',{{this.product.stock}},'{{this.product._id}}')">-</button>

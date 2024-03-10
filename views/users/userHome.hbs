@@ -124,6 +124,12 @@
     .navbar-collapse {
       margin-bottom: 260px;
     }
+
+    #cart {
+
+      top: -118%;
+      left: 53%;
+    }
   }
 
   @media (max-width: 576px) {
@@ -161,24 +167,24 @@
           {{/each}}
         </div>
       </div>
-      
+
     </div>
   </section>
-{{#if Banner}}
-<div id="carouselExampleSlidesOnly" class="carousel slide" data-bs-ride="carousel" style="margin-top:60px;">
+  {{#if Banner}}
+  <div id="carouselExampleSlidesOnly" class="carousel slide" data-bs-ride="carousel" style="margin-top:24px;">
 
-  <div class="carousel-inner">
+    <div class="carousel-inner">
 
-    {{#each Banner}}
-    <div class="carousel-item {{#unless @index}}active{{/unless}}">
-      <img src="/uploads/{{this.bannerImg}}" class="d-block w-100" style="height: auto; object-fit: contain;"
-        alt="banner">
+      {{#each Banner}}
+      <div class="carousel-item {{#unless @index}}active{{/unless}}">
+        <img src="/uploads/{{this.bannerImg}}" class="d-block w-100" style="height: auto; object-fit: contain;"
+          alt="banner">
+      </div>
+      {{/each}}
+
     </div>
-    {{/each}}
-
   </div>
-</div>
-{{/if}}
+  {{/if}}
 
 
 

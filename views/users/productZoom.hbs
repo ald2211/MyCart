@@ -4,6 +4,8 @@
         background-color: #f8f9fa;
     }
 
+   
+
     .container {
         background-color: #ffffff;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -164,13 +166,13 @@
         margin: 60px 0;
     }
 
-    ul {
+    .zoomUl {
         margin-right: 27px;
         list-style: none;
         text-align: center;
     }
 
-    ul li {
+    .zoomUl li {
         line-height: 50px;
     }
 
@@ -208,7 +210,8 @@
         /* Zoom in when hovering */
     }
 
-    @media (min-width: 200px) and (max-width: 991px) {
+
+    @media (min-width: 200px) and (max-width: 992px) {
         .magnifier {
             left: 2px !important;
         }
@@ -235,6 +238,10 @@
             margin: 50px 0 10px 0;
             font-weight: 300;
             text-align: center;
+        }
+
+        .navbar-collapse {
+            margin-bottom: 360px;
         }
     }
 </style>
@@ -284,7 +291,7 @@
 <div class="container">
     <h2 style="color: rgb(13, 159, 159);margin-bottom: 30px; text-align: center; margin-left: 30px;">Book Specification
     </h2>
-    <ul style="list-style: none; text-align: center;">
+    <ul class="zoomUl" style="list-style: none; text-align: center;">
         <li>pubisher: {{datas.publisher}}</li>
         <li>published: {{date}}</li>
         <li>Title: {{datas.name}}</li>

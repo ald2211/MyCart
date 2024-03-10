@@ -201,6 +201,15 @@
     .orderPaymentCOD {
         display: none;
     }
+
+    @media (max-width: 992px) {
+
+        .navbar-collapse {
+            margin-bottom: 260px;
+        }
+
+       
+    }
 </style>
 
 <div class="container mt-5">
@@ -269,7 +278,7 @@
                     {{/if}}
                     <p class="card-text mt-2">Total: ₹{{this._doc.total}}.00</p>
                     <p class="card-text">Date: {{this.formattedDate}}</p>
-                    <button onclick="cancelOrder('{{this._doc._id}}')" class="btn btn-danger" type="button"
+                    <button onclick="showDeleteModal('{{this._doc._id}}')" class="btn btn-danger" type="button"
                         id="cancelbtn">Cancel Order</button>
                     <button class="btn btn-success invoice{{this._doc.orderPaymentStatus}}" type="button"
                         onclick="invoice('{{this._doc.orderId}}')">Invoice</button>
@@ -278,6 +287,26 @@
                         Payment</button>
                 </div>
             </div>
+            <!-- Bootstrap Modal -->
+    <div class="modal" tabindex="-1" role="dialog" id="deleteModal">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Confirmation</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true" onclick="hideModal()">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <p>Are you sure you want to cancel this Order?</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="hideModal()">Cancel</button>
+            <button type="button" class="btn btn-danger" onclick="confirmCancel()">Continue</button>
+          </div>
+        </div>
+      </div>
+    </div>
             {{/each}}
             {{else}}
             <p style="text-align:center;">no pending orders found</p>
@@ -489,10 +518,24 @@
             }
         });
     });
+    // cancel order
+    //confirmation while cancelling
+  var currentOrderId;
+  function showDeleteModal(id) {
+    currentProductId = id;
+
+    $('#deleteModal').modal('show');
+  }
+     function confirmCancel() {
+        cancelOrder(currentProductId)
+    }
+    function hideModal() {
+        $('#deleteModal').modal('hide');
+    }
 
     function cancelOrder(id) {
 
-        if (confirm('Are you sure to cancel this order?')) {
+        
             fetch(`/orders/cancel/${id}`, {
                 method: 'DELETE',
                 headers: {
@@ -511,7 +554,7 @@
             }).catch(error => {
                 console.log('Error:', error);
             })
-        }
+        
     };
     //continue payment
     function continuePayment(id) {
