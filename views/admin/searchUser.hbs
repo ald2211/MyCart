@@ -99,26 +99,7 @@
     <h2 style="background: red; color: white; margin-top:21px; text-align:center">No results found</h2>
     {{/if}}
   </div>
-  <nav aria-label="Page navigation example">
-    <ul class="pagination justify-content-center align-items-center">
-      <li class="page-item">
-        <a class="page-link" href="#" aria-label="Previous">
-          <span aria-hidden="true">&laquo;</span>
-          <span class="sr-only">Previous</span>
-        </a>
-      </li>
-      {{#each pgn }}
-      <li class="page-item"><a class="page-link" href="/admin/searchUserResults?page={{this}}">{{this}}</a></li>
-      {{/each}}
 
-      <li class="page-item">
-        <a class="page-link" href="#" aria-label="Next">
-          <span aria-hidden="true">&raquo;</span>
-          <span class="sr-only">Next</span>
-        </a>
-      </li>
-    </ul>
-  </nav>
   <hr style="height: 1px;background: #1917170d;margin-top: 50px;">
 
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

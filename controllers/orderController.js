@@ -644,12 +644,11 @@ const viewOrderDetails = async (req, res) => {
 
   const OrderDetails = await order
     .findOne({ orderId: OrderId })
-    .populate("user", "name email number")
+    .populate("user", "name email number gmail")
     .populate(
       "products.product",
       "name price CategoryDiscountedPrice ProductDiscountedPrice images"
     );
-
   OrderDetails.products.forEach((productInfo) => {
     if (
       productInfo.product.CategoryDiscountedPrice > 0 ||
@@ -679,6 +678,7 @@ const viewOrderDetails = async (req, res) => {
       Discount: productInfo.product.finalDiscount || 0,
     })),
     email: OrderDetails.user.email,
+    gmail:OrderDetails.user.gmail,
     number: OrderDetails.user.number,
     pincode: OrderDetails.pincode,
     address: OrderDetails.address,

@@ -201,7 +201,9 @@
     .orderPaymentCOD {
         display: none;
     }
-
+      .table-container {
+        overflow-x: auto;
+    }
     @media (max-width: 992px) {
 
         .navbar-collapse {
@@ -210,6 +212,7 @@
 
        
     }
+    
 </style>
 
 <div class="container mt-5">
@@ -335,7 +338,8 @@
             <button class="btn btn-outline-dark mt-3 mb-4" onclick="toggleOrderHistory()">Show Order History</button>
 
             <!-- Order History Table (Hidden by default) -->
-            <table class="table mt-3 order-history-table">
+            <div class="table-container">
+            <table class="table mt-3 order-history-table table-container">
                 <!-- Add table headers and rows here -->
                 <thead>
                     <tr>
@@ -405,7 +409,7 @@
                 </tbody>
 
             </table>
-
+            </div>
         </div>
         <nav aria-label="Page navigation example">
             <ul class="pagination justify-content-center align-items-center">
