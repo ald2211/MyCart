@@ -117,6 +117,7 @@
 
   <div class="container mt-5">
     <div class="row">
+      {{#if product}}
       {{#each product}}
       <div class="col-md-3 mb-4">
         <div class="card pb-5">
@@ -147,28 +148,10 @@
         </div>
       </div>
       {{/each}}
-
+      {{else}}
+        <h2 style="text-align: center; color:red;">no searched results</h2>
+      {{/if}}
     </div>
-    <nav aria-label="Page navigation example">
-      <ul class="pagination justify-content-center align-items-center">
-        <li class="page-item">
-          <a class="page-link" href="#" aria-label="Previous">
-            <span aria-hidden="true">&laquo;</span>
-            <span class="sr-only">Previous</span>
-          </a>
-        </li>
-        {{#each pgn }}
-        <li class="page-item"><a class="page-link" href="/searchUser?page={{this}}">{{this}}</a></li>
-        {{/each}}
-
-        <li class="page-item">
-          <a class="page-link" href="#" aria-label="Next">
-            <span aria-hidden="true">&raquo;</span>
-            <span class="sr-only">Next</span>
-          </a>
-        </li>
-      </ul>
-    </nav>
   </div>
 
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
