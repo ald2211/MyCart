@@ -1,0 +1,1 @@
+About MyCart, my first e-commerce website project built from scratch, is an online bookstore encompassing core functionalities of a typical e-commerce platform. While my primary focus was honing my skills in Node.js and Express.js for the backend, Moving forward, I plan to enhance the user experience by further developing the frontend.
